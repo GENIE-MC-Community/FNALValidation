@@ -4,7 +4,7 @@ import argparse
 
 def getArgs(
         require_output_path=True,
-        require_run_path=False,
+        require_run_path=True,
         usage="./runLegacyValidation.py <options>"
         ):
     parser = argparse.ArgumentParser(
