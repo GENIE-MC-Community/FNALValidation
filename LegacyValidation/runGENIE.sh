@@ -37,6 +37,16 @@ setup log4cpp v1_1_1b -q debug:e7
 export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
 export PATH=$GENIE/bin:$PATH
 
+echo "Command: "$cmd > $log
+echo "Input folder: " >> $log
+ls -lh input >> $log
+echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH" >> $log
+echo "PATH = $PATH" >> $log
+echo "GENIE = $GENIE" >> $log
+echo "Contents of GENIE/bin: " >> $log
+echo `ls $GENIE/bin` >> $log
+echo "Running command" >> $log
+
 source /cvmfs/fermilab.opensciencegrid.org/products/common/etc/setups.sh
 setup ifdhc
 
@@ -54,10 +64,6 @@ done
 if [ "$debug" == "true" ]
 then
   echo "DEBUG MODE ON. ALL OUTPUT WILL BE COPIED TO LOG FILE"
-  echo "Command: "$cmd > $log
-  echo "Input folder: " >> $log
-  ls -lh input >> $log
-  echo "Running command" >> $log
   $cmd >> $log
 else
   $cmd 1>/dev/null 2>$log
