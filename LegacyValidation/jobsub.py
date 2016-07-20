@@ -4,7 +4,7 @@ import os, re, subprocess
 class Jobsub:
     # handle jobsub command for runGENIE.sh in dag file  
     # TODO - need to get more clever with lifetimes for jobs...
-    def __init__ (self, args, lifetime='12h'):
+    def __init__ (self, args, lifetime='23h'):
         """
         init a proper jobsub command for dag
         """
