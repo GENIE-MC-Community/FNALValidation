@@ -3,7 +3,7 @@
 import msg
 import re, os
 
-nKnots    = "500" # no. of knots for gmkspl
+nKnots    = "200" # no. of knots for gmkspl
 maxEnergy = "500" # maximum energy for gmkspl
 
 # neutrino pdg codes for given job 
