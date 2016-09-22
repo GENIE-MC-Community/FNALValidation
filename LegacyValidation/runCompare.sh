@@ -20,10 +20,15 @@ done
 
 ### setup externals and paths ###
 
-export GUPSBASE=/cvmfs/fermilab.opensciencegrid.org/
+## out of date...
+# export GUPSBASE=/cvmfs/fermilab.opensciencegrid.org/
+# source $GUPSBASE/products/genie/externals/setup
+# setup root v5_34_25a -q debug:e7:nu
+# setup lhapdf v5_9_1b -q debug:e7
+# setup log4cpp v1_1_1b -q debug:e7
 
-source $GUPSBASE/products/genie/externals/setup
-
+## use larsoft...
+source /grid/fermiapp/products/genie/bootstrap_genie_ups.sh
 setup root v5_34_25a -q debug:e7:nu
 setup lhapdf v5_9_1b -q debug:e7
 setup log4cpp v1_1_1b -q debug:e7
