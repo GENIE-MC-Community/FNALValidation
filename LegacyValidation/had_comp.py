@@ -32,7 +32,7 @@ def createFileList (args):
     print >>xml, '\t<model name="' + args.tags[i] + '-' + args.dates[i] + '">'
     ghepPath = args.topdir + "/" + args.tags[i] + "/" + args.dates[i] + "/events/hadronization"
     xsecPath = args.topdir + "/" + args.tags[i] + "/" + args.dates[i] + "/xsec/nuN"
-    for key in nuPDG.iterkeys():
+    for key in sorted(nuPDG.iterkeys()):
       print >>xml, '\t\t<evt_file format="ghep"> ' + ghepPath + '/gntp.' + key + '.ghep.root </evt_file>'
     print >>xml, '\t\t<xsec_file> ' + xsecPath + '/xsec-vN-' + args.tags[i] + '.root </xsec_file>'
     print >>xml, '\t</model>'
