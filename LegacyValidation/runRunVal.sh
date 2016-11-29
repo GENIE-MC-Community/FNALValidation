@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TAG=R-2_10_2
 TAG=trunk
+TAG=R-2_12_2
 VALPATH=/grid/fermiapp/genie/validation/FNALValidation/LegacyValidation
 BUILDS=/grid/fermiapp/genie/builds
 OUTDIR=/pnfs/genie/scratch/users/$USER/legacyValidation
