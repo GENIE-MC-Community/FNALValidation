@@ -79,6 +79,17 @@ fi
 
 ### copy results to scratch
 
+# first, remove size zero log files
+logs=`ls *.log`
+for logfile in $logs
+do
+    echo $logfile
+    if [[ ! -s $logfile ]]; then
+        echo "... is a zero size file, removing!"
+        rm $logfile
+    fi
+done
+
 mkdir scratch
 mv *.root scratch
 mv *.xml scratch
