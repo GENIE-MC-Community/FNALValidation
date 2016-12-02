@@ -61,6 +61,12 @@ do
   ifdh cp $file input
 done
 
+if [ "$debug" == "true" ]
+then
+    echo "Checking input files..."
+    ls input
+fi
+
 ### run the command ###
 
 if [ "$debug" == "true" ]
@@ -80,6 +86,12 @@ mv *.log scratch
 mv *.eps scratch
 mv *.ps scratch
 mv *.pdf scratch
+
+if [ "$debug" == "true" ]
+then
+    echo "Checking output files..."
+    ls scratch
+fi
 
 ### copy everything from scratch to output 
 
