@@ -105,8 +105,23 @@ then
 fi
 
 ### copy everything from scratch to output 
+# r. hatcher is dubious of `cp -r` in ifdhcp
+# ifdh cp -r scratch $out
 
-ifdh cp -r scratch $out
+# copy files one-by-one after making any necessary subdirectories
+# use -x to enable echoing commands (+x to turn it back off)
+cd scratch
+# make a script to be sourced ...
+rm -f copy_file.sh
+touch copy_files.sh
+# make any subdirectories (remove leading ./)
+find . -type d -exec echo ifdh mkdir $out/{} \; | sed -e "s%\./%%g" >> copy_files.sh
+# now any files (again removing leading ./)
+find . -type f -exec echo ifdh cp {} $out/{} \; | sed -e "s%\./%%g" >> copy_files.sh
+set -x
+source copy_files.sh
+set +x
+cd ..
 
 # example (problems with " eaten by jobsub...)
 # jobsub_submit -G genie -M --OS=SL6 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC file://runGENIE.sh -p /grid/fermiapp/genie/builds/genie_R-2_9_0_buildmaster_2015-10-27/ -o /pnfs/genie/scratch/users/goran/ -c "gmkspl -p 12 -t 1000010010 -n 500 -e 500 -o scratch/pgxspl-qel.xml --event-generator-list QE"
