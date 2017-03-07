@@ -1,10 +1,10 @@
 #!/bin/bash
 
+TAG=R-2_12_4
 TAG=trunk
-TAG=R-2_12_2
 
-DEBUG=""
 DEBUG="--debug true"
+DEBUG=""
 
 VALPATH=/grid/fermiapp/genie/validation/FNALValidation/LegacyValidation
 BUILDS=/grid/fermiapp/genie/builds
