@@ -9,8 +9,8 @@ class Jobsub:
         init a proper jobsub command for dag
         """
         # -n option is mandatory for jobsub (otherwise jobs will be run twice...)
-        self.basecmd = "jobsub -n --OS=%s --resource-provides=usage_model=%s -G %s --expected-lifetime=%s file://%s -p %s -d %s" % \
-                (args.os, args.resource, args.group, lifetime, args.run, args.builds + "/" + args.buildName, args.debug)
+        self.basecmd = "jobsub -n --OS=%s --resource-provides=usage_model=%s -G %s --expected-lifetime=%s file://%s -p %s -v %s -d %s" % \
+                (args.os, args.resource, args.group, lifetime, args.run, args.builds+"/"+args.buildNameGE, args.builds+"/"+args.buildNameCmp, args.debug)
         # create dag file
         self.dagFile = args.paths['top'] + "/legacyValidation-" + args.tag + \
                 "-" + args.build_date + ".dag"

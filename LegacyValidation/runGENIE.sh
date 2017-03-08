@@ -1,10 +1,13 @@
 #!/bin/bash
 
-while getopts p:o:i:l:c:d: OPT
+while getopts p:v:o:i:l:c:d: OPT
 do
   case ${OPT} in
     p) # path to genie top dir
       export GENIE=$OPTARG
+      ;;
+    v) # path to comparisons top dir
+      export GENIE_COMPARISONS=$OPTARG
       ;;
     o) # output directory
       out=$OPTARG
@@ -32,12 +35,20 @@ done
 # bootstrap setup off larsoft repo...
 source /grid/fermiapp/products/genie/bootstrap_genie_ups.sh
 
-setup root v5_34_25a -q debug:e7:nu
-setup lhapdf v5_9_1b -q debug:e7
-setup log4cpp v1_1_1b -q debug:e7
+# These don't need to be debug 
+#
+#setup root v5_34_25a -q debug:e7:nu
+#setup lhapdf v5_9_1b -q debug:e7
+#setup log4cpp v1_1_1b -q debug:e7
 
-export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
-export PATH=$GENIE/bin:$PATH
+# switch to the optimized ones
+#
+setup root v5_34_25a -q e7:nu:prof
+setup lhapdf v5_9_1b -q e7:prof
+setup log4cpp v1_1_1b -q e7:prof
+
+export LD_LIBRARY_PATH=$GENIE/lib:$GENIE_COMPARISONS/lib:$LD_LIBRARY_PATH
+export PATH=$GENIE/bin:$GENIE_COMPARISONS/bin:$PATH
 
 echo "Command: "$cmd > $log
 echo "Input folder: " >> $log
@@ -61,12 +72,6 @@ do
   ifdh cp $file input
 done
 
-if [ "$debug" == "true" ]
-then
-    echo "Checking input files..."
-    ls input
-fi
-
 ### run the command ###
 
 if [ "$debug" == "true" ]
@@ -79,17 +84,6 @@ fi
 
 ### copy results to scratch
 
-# first, remove size zero log files
-logs=`ls *.log`
-for logfile in $logs
-do
-    echo $logfile
-    if [[ ! -s $logfile ]]; then
-        echo "... is a zero size file, removing!"
-        rm $logfile
-    fi
-done
-
 mkdir scratch
 mv *.root scratch
 mv *.xml scratch
@@ -97,12 +91,6 @@ mv *.log scratch
 mv *.eps scratch
 mv *.ps scratch
 mv *.pdf scratch
-
-if [ "$debug" == "true" ]
-then
-    echo "Checking output files..."
-    ls scratch
-fi
 
 ### copy everything from scratch to output 
 # r. hatcher is dubious of `cp -r` in ifdhcp

@@ -4,13 +4,20 @@ Retrieve build from Jenkins.
 
     python getJenkinsBuildToDisk.py --genie_tag <tag> --builds <path>
 
+Or:
+
+    python getJenkinsBuildToDisk.py --genie_tag <tag> --comp_tag <tag> --builds <path>
+
+NOTE: by default, comp_tag=trunk
+
 e.g.:
     export BUILDD=/grid/fermiapp/genie/builds
     python getJenkinsBuildToDisk.py --genie_tag trunk --builds $BUILDD
 
 Or:
     export BUILDD=/grid/fermiapp/genie/builds
-    python getJenkinsBuildToDisk.py --genie_tag R-2_10_8 --builds $BUILDD
+    python getJenkinsBuildToDisk.py --genie_tag R-2_12_0 --builds $BUILDD
+
 """
 
 from jobsub import Jobsub
@@ -36,10 +43,13 @@ if __name__ == "__main__":
     args = parser.getArgs(require_output_path=False, require_run_path=False,
                           usage=__doc__)
     # find most recent build if date was not defined
-    if args.build_date is None: 
-        args.build_date = jenkins.findLast(args.tag)
+        
+    if args.build_date is None:
+        args.build_date = jenkins.findLast("generator",args.tag)
+        args.build_date = jenkins.findLast("comparisons",args.cmptag)
     # print configuration summary
     initMessage(args)
     # get build
     msg.info ("Getting GENIE from jenkins...\n")
-    args.buildName = jenkins.getBuild(args.tag, args.build_date, args.builds)
+    args.buildNameGE = jenkins.getBuild( "generator", args.tag, args.build_date, args.builds)
+    args.buildNameCmp = jenkins.getBuild( "comparisons", args.cmptag, args.build_date, args.builds)

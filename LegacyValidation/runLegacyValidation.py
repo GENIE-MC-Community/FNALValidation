@@ -2,6 +2,12 @@
 
 # GENIE Legacy Validation based on src/scripts/production/batch
 
+# example format:
+# ./runLegacyValidation.py --genie_tag R-2_12_0  \ 
+#                          --run_path /grid/fermiapp/genie/legacyValidation_update/runGENIE.sh \
+#                          --builds /grid/fermiapp/genie/builds_update/ \ 
+#                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation
+
 from jobsub import Jobsub
 import parser, jenkins, msg, nun, nua, standard, reptest, xsecval, hadronization
 import os, datetime
@@ -51,13 +57,20 @@ def preparePaths (path):
 if __name__ == "__main__":
   # parse command line arguments
   args = parser.getArgs()
-  # find most recent build if date was not defined
-  if args.build_date is None: args.build_date = jenkins.findLast (args.tag)
+  #
+  # find most recent build if date was not defined 
+  # NOTE: need to check if the two build dates are consistent !       
+  if args.build_date is None:
+     args.build_date = jenkins.findLast("generator",args.tag)
+     args.build_date = jenkins.findLast("comparisons",args.cmptag)
   # print configuration summary
   initMessage (args)
-  # get build
+  #
+  # print configuration summary
   msg.info ("Getting GENIE from jenkins...\n")
-  args.buildName = jenkins.getBuild (args.tag, args.build_date, args.builds)
+  # get build
+  args.buildNameGE  = jenkins.getBuild ("generator",args.tag, args.build_date, args.builds)
+  args.buildNameCmp = jenkins.getBuild ("comparisons",args.cmptag, args.build_date, args.builds)
   # preapre folder structure for output
   args.paths = preparePaths (args.output + "/" + args.tag + "/" + args.build_date)
   # initialize jobsub
@@ -69,11 +82,11 @@ if __name__ == "__main__":
   # nucleus cross sections
   nua.fillDAG (jobsub, args.tag, args.paths)
   # standard mctest sanity
-  standard.fillDAG (jobsub, args.tag, args.paths)
+# -->  standard.fillDAG (jobsub, args.tag, args.paths)
   # repeatability test
-  reptest.fillDAG (jobsub, args.tag, args.paths)
+# -->  reptest.fillDAG (jobsub, args.tag, args.paths)
   # xsec validation
-  xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+# -->  xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
   # hadronization test
   hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths)
   # dag file done, submit jobs
