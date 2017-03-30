@@ -5,11 +5,19 @@
 # example format:
 # ./runLegacyValidation.py --genie_tag R-2_12_0  \ 
 #                          --run_path /grid/fermiapp/genie/legacyValidation_update/runGENIE.sh \
-#                          --builds /grid/fermiapp/genie/builds_update/ \ 
+#                          --builds /grid/fermiapp/genie/builds_update \ 
 #                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation
 
 from jobsub import Jobsub
-import parser, jenkins, msg, nun, nua, standard, reptest, xsecval, hadronization
+# various services
+import parser, jenkins, msg 
+# xsec splines
+import nun, nua
+# old-style (legacy) validation tests
+import standard, reptest, xsecval, hadronization
+# new-style validation (minerva, etc.)
+import minerva
+# general
 import os, datetime
 
 def initMessage (args):
@@ -41,6 +49,7 @@ def preparePaths (path):
   paths['reptest'] = path + "/events/repeatability"
   paths['xsecval'] = path + "/events/xsec_validation"
   paths['hadron']  = path + "/events/hadronization"
+  paths['minerva'] = path + "/events/minerva"
   # reports
   paths['reports'] = path + "/reports"
   paths['sanity']  = path + "/reports/sanity_mctest"
@@ -48,6 +57,7 @@ def preparePaths (path):
   paths['xseclog'] = path + "/reports/xsec_validation"
   paths['xsecsng'] = path + "/reports/xsec_validation/single_comparisons_with_errors"
   paths['hadrep']  = path + "/reports/hadronization_test"
+  paths['minervarep'] = path + "/reports/minerva"
   # create all directiories
   for p in paths.values():
     if not os.path.exists (p): os.makedirs (p)
@@ -89,5 +99,7 @@ if __name__ == "__main__":
 # -->  xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
   # hadronization test
   hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+  # MINERvA test
+  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths )
   # dag file done, submit jobs
   jobsub.submit()
