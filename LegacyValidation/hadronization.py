@@ -76,9 +76,10 @@ def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep):
   # in serial mode
   jobsub.add ("<serial>")
   inFile  = "file_list-" + tag + "-" + date + ".xml"
-  outFile = "genie_" + tag + "-hadronization_test.ps"
+## --> not needed...  outFile = "genie_" + tag + "-hadronization_test.ps"
 ## --> old code -->  cmd = "gvld_hadronz_test -g input/" + inFile + " -o " + outFile
-  cmd = "gvld_hadronization -g input/" + inFile + " -o " + outFile
+## --> turned out, there is no '-o' argument field...  cmd = "gvld_hadronization -g input/" + inFile + " -o " + outFile
+  cmd = "gvld_hadronization -g input/" + inFile 
   # add the command to dag
   inputs = outRep + "/" + inFile + " " + xsec_n_path + "/xsec-vN-" + tag + ".root " + outEvents + "/*.ghep.root"
   logFile = "gvld_hadronz_test.log"

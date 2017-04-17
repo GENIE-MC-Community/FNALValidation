@@ -3,10 +3,13 @@
 # GENIE Legacy Validation based on src/scripts/production/batch
 
 # example format:
-# ./runLegacyValidation.py --genie_tag R-2_12_0  \ 
-#                          --run_path /grid/fermiapp/genie/legacyValidation_update/runGENIE.sh \
+# ./runLegacyValidation.py --genie_tag trunk  \ 
+#                          --run_path /grid/fermiapp/genie/legacyValidation_update_1/runGENIE.sh \
 #                          --builds /grid/fermiapp/genie/builds_update \ 
 #                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation
+# GENIE tags can also be R-2_12_4, etc.
+#
+
 
 from jobsub import Jobsub
 # various services
@@ -98,8 +101,8 @@ if __name__ == "__main__":
   # xsec validation
 # -->  xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
   # hadronization test
-  hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+  hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths )
   # MINERvA test
-  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths )
+  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.builds+"/"+args.buildNameCmp )
   # dag file done, submit jobs
   jobsub.submit()

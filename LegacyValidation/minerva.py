@@ -12,25 +12,71 @@ nevents="100000"
 
 data_struct = {
    'nu-CCQEQ2' : { 'projectile' : '14', 'energy' : '1.5,10.', 
-                   'flux' : '$GENIE_COMPARISONS/data/fluxes/minerva/Release-2013/CCQEQ2/nu-flux-MINERvA.data',
+                   'flux' : 'data/fluxes/minerva/Release-2013/CCQEQ2/nu-flux-MINERvA.data',
 		   'releaselabel' : 'numu_r2013' ,
-		   'datafiles' : ['Release-2013/CCQEQ2/nu-Hydrocarbon.data'],
-		   'mcprediction' : 'MINERvACCQEQ2'
+		   'datafiles' : ['Release-2013/CCQEQ2/nu-Hydrocarbon.data'], # FIXME !!
+		   'mcpredictions' : ['MINERvACCQEQ2']                         # Redo later as PAIRS (dict.)
 		 },
+   'nu-CoherentPi' : { 'projectile' : '14', 'energy' : '1.5,20.',
+                       'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nu-flux-MINERvA.data',
+                       'releaselabel' : 'numu_r2014',
+		       'datafiles' : [ 'Release-2014/CoherentPion/nu-Hydrocarbon-PionEnergy.data' 
+		                       'Release-2014/CoherentPion/nu-Hydrocarbon-PionPolarAngle.data'
+				     ],
+		       'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
+		                            'MINERvACoherentPionPolarAngle' 
+					 ]  
+                     }, 
+   'nu-CCMuProtonFS' : { 'projectile' : '14', 'energy' : '0.,100.',
+                         'flux' : 'data/fluxes/minerva/Release-2015/MuProtonFS/nu-flux-MINERvA.data',
+			 'releaselabel' : 'numu_r2015',
+			 'datafiles' : ['Release-2015/MuProtonFS/nu-Hydrocarbon-CCMuPfsQ2P.data'],
+			 'mcpredictions' : ['MINERvACCMuProtonFSQ2P']
+                     }, 
+   'nu-1ChgPion' : { 'projectile' : '14', 'energy' : 'FIXME !!!',
+                     'flux' : 'data/fluxes/minerva/Release-2015/ChargedPion/nu-flux-MINERvA.data',
+                     'releaselabel' : 'numu_r2015',
+		     'datafiles' : [ 'Release-2015/ChargedPion/nu-Hydrocarbon-1ChgPionEnergy.data', 
+		                     'Release-2015/ChargedPion/nu-Hydrocarbon-1ChgPionPolarAngle.data' 
+				   ],
+		     'mcpredictions' : [ 'MINERvACC1pichgEnergy', 
+		                         'MINERvACC1pichgPolarAngle' 
+				       ]
+		   },
    'nubar-CCQEQ2' : { 'projectile' : '-14', 'energy' : '1.5,10.',
-                      'flux' : '$GENIE_COMPARISONS/data/fluxes/minerva/Release-2013/CCQEQ2/nubar-flux-MINERvA.data',
+                      'flux' : 'data/fluxes/minerva/Release-2013/CCQEQ2/nubar-flux-MINERvA.data',
 		      'releaselabel' : 'numubar_2013',
 		      'datafiles' : ['Release-2013/CCQEQ2/nubar-Hydrocarbon.data'],
-		      'mcprediction' : 'MINERvACCQEQ2'
-                    }
+		      'mcpredictions' : [ 'MINERvACCQEQ2' ]
+                    },
+   'nubar-CoherentPi' : { 'projectile' : '-14', 'energy' : '1.5,20.',
+                          'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nubar-flux-MINERvA.data',
+                          'releaselabel' : 'numubar_r2014',
+		          'datafiles' : [ 'Release-2014/CoherentPion/nubar-Hydrocarbon-PionEnergy.data' 
+		                          'Release-2014/CoherentPion/nubar-Hydrocarbon-PionPolarAngle.data'
+				        ],
+		          'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
+		                              'MINERvACoherentPionPolarAngle' 
+					    ]  
+                        }, 
+   'nubar-CC1Pi0' : { 'projectile' : '-14', 'energy' : '0.1,20.',
+                      'flux' : 'data/fluxes/minerva/Release-2015/SinglePi0/nubar-flux-MINERvA.data',
+                      'releaselabel' : 'numu_r2015',
+		      'datafiles' : [ 'Release-2015/SinglePi0/nubar-Hydrocarbon-cc1pi0Momentum.data', 
+		                      'Release-2015/SinglePi0/nubar-Hydrocarbon-cc1pi0PolarAngle.data' 
+				    ],
+		      'mcpredictions' : [ 'MINERvACC1pi0Momentum', 
+		                          'MINERvACC1pi0PolarAngle' 
+					]
+                  }
 }
 
-def fillDAG( jobsub, tag, date, paths ):
-   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'])
+def fillDAG( jobsub, tag, date, paths, gcmp ):
+   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'], gcmp )
    createCmpConfigs( tag, date, paths['minervarep'])
    fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['minerva'], paths['minervarep'] )
 
-def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
+def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, gcmp ):
 
    if eventFilesExist(out):
       msg.warning ("MINERvA test ghep files found in " + out + " ... " + msg.BOLD + "skipping minerva:fillDAG_GHEP\n", 1)
@@ -42,11 +88,16 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
    jobsub.add ("<parallel>")
    # common configuration
    inputxsec = "gxspl-vA-" + tag + ".xml"
-   options = " -n " + nevents + " -t " + target + " --cross-sections input/" + inputxsec 
+   options = " -t " + target + " --cross-sections input/" + inputxsec 
    # loop over keys and generate gevgen command
    for key in data_struct.iterkeys():
-     cmd = "gevgen " + options + " -p " + data_struct[key]['projectile'] + " -e " + data_struct[key]['energy'] + \
-           " -f " + data_struct[key]['flux'] + " -o gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
+     opt = ""
+     if key.find("CoherentPi") == -1:
+        opt = options + " -n " + nevents
+     else:
+        opt = options + " -n 10000 --event-generator-list COH "
+     cmd = "gevgen " + opt + " -p " + data_struct[key]['projectile'] + " -e " + data_struct[key]['energy'] + \
+           " -f " + gcmp + "/" + data_struct[key]['flux'] + " -o gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
      logfile = "gevgen_" + key + ".log"
      # NOTE: FIXME - CHECK WHAT IT DOES !!!
      jobsub.addJob ( xsec_a_path + "/" + inputxsec, out, logfile, cmd )
@@ -80,13 +131,13 @@ def createCmpConfigs( tag, date, reportdir ):
       print >>xml, '</genie_simulation_outputs>'
       xml.close()
 
-      print >>gxml, '\t\t\t<comparisons>'
+      print >>gxml, '\t\t\t<comparison>'
 
       for i in range( len( data_struct[key]['datafiles'] ) ):
          print >>gxml, '\t\t\t\t<spec>'
          print >>gxml, '\t\t\t\t\t<path2data> data/measurements/vA/minerva' + data_struct[key]['datafiles'][i] + ' </path2data>'
          print >>gxml, '\t\t\t\t\t<dataclass> MINERvAExData </dataclass>'
-         print >>gxml, '\t\t\t\t\t<predictionclass> ' + data_struct[key]['mcprediction'] + ' </predictionclass>'
+         print >>gxml, '\t\t\t\t\t<predictionclass> ' + data_struct[key]['mcpredictions'][i] + ' </predictionclass>'
          print >>gxml, '\t\t\t\t</spec>'
       
       print >>gxml, '\t\t\t\t<genie> ' + xmlfile + ' </genie>'
