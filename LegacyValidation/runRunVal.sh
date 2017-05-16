@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TAG=R-2_12_4
 TAG=trunk
+TAG=R-2_12_6
 
 DEBUG="--debug true"
 DEBUG=""
