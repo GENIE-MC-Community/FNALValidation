@@ -3,8 +3,8 @@
 import msg
 import re, os
 
-nKnots    = "200" # no. of knots for gmkspl
-maxEnergy = "500" # maximum energy for gmkspl
+nKnots    = "100" # no. of knots for gmkspl
+maxEnergy = "150" # maximum energy for gmkspl
 
 # neutrino pdg codes for given job 
 nuPDG = {'chm'           : '12,-12,14,-14,16,-16',
