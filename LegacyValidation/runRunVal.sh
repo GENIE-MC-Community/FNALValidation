@@ -3,8 +3,8 @@
 TAG=trunk
 TAG=R-2_12_6
 
-DEBUG="--debug true"
 DEBUG=""
+DEBUG="--debug true"
 
 VALPATH=/grid/fermiapp/genie/validation/FNALValidation/LegacyValidation
 BUILDS=/grid/fermiapp/genie/builds
