@@ -62,19 +62,33 @@ if __name__ == "__main__":
   args.paths = preparePaths (args.output + "/" + args.tag + "/" + args.build_date)
   # initialize jobsub
   jobsub = Jobsub (args)
+
   # fill dag files with jobs
   msg.info ("Adding jobs to dag file: " + jobsub.dagFile + "\n")
-  # nucleon cross sections
+  # nucleon cross sections - always do this
   nun.fillDAG (jobsub, args.tag, args.paths)
+
+  # set optional pieces
+  do_nucleus = False
+  do_mctest = False
+  do_repeat = False
+  do_xsec_val = False
+  do_hadro = False
+
   # nucleus cross sections
-  nua.fillDAG (jobsub, args.tag, args.paths)
+  if do_nucleus:
+    nua.fillDAG (jobsub, args.tag, args.paths)
   # standard mctest sanity
-  standard.fillDAG (jobsub, args.tag, args.paths)
+  if do_mctest:
+    standard.fillDAG (jobsub, args.tag, args.paths)
   # repeatability test
-  reptest.fillDAG (jobsub, args.tag, args.paths)
+  if do_repeat:
+    reptest.fillDAG (jobsub, args.tag, args.paths)
   # xsec validation
-  xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+  if do_xsec_val:
+    xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
   # hadronization test
-  hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+  if do_hadro:
+    hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths)
   # dag file done, submit jobs
   jobsub.submit()
