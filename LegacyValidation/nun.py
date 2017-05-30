@@ -34,7 +34,8 @@ maxEnergy = "150" # maximum energy for gmkspl
 #          'res_taubar_nc' : '-16',
 #          'res_tau_cc'    : '16',
 #          'res_tau_nc'    : '16' }
-nuPDG = {'qel'           : '12,-12,14,-14'}
+nuPDG = {'qel'           : '12,-12,14,-14',
+         'nue'           : '12,-12,14,-14'}
          
 # target pdg codes for given job 
 targetPDG = {'chm'           : '1000010010,1000000010',
