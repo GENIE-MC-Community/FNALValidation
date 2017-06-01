@@ -40,8 +40,6 @@ export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
 export PATH=$GENIE/bin:$PATH
 
 echo "Command: "$cmd > $log
-echo "Input folder: " >> $log
-ls -lh input >> $log
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH" >> $log
 echo "PATH = $PATH" >> $log
 echo "GENIE = $GENIE" >> $log
@@ -56,11 +54,30 @@ setup ifdhc
 
 mkdir input
 
+# try to ifdhcp using a file - make a file and put each input in
+# according to the pattern
+#   input1 input
+#   input2 input
+#   input3 input
+#   (file) (dest directory)
+touch transfer_file.txt
 for file in "${input[@]}"
 do
-  ifdh cp $file input
+  FILEDEST=`echo $file | perl -ne 'print $_." input\n";'`
+  echo $FILEDEST >> transfer_file.txt
 done
+echo "Transfer file contents: " >> $log
+cat transfer_file.txt >> $log
+if [ "$debug" == "true" ]
+then
+    echo "Checking transfer file contents..."
+    cat transfer_file.txt
+fi
 
+ifdh cp -f transfer_file.txt
+
+echo "Input folder: " >> $log
+ls -lh input >> $log
 if [ "$debug" == "true" ]
 then
     echo "Checking input files..."
