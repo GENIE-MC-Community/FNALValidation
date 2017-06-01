@@ -53,6 +53,7 @@ setup ifdhc
 ### load input (if defined) ###
 
 mkdir input
+touch ifdh_transfer_file.txt
 
 # try to ifdhcp using a file - make a file and put each input in
 # according to the pattern
@@ -60,21 +61,30 @@ mkdir input
 #   input2 input
 #   input3 input
 #   (file) (dest directory)
-touch transfer_file.txt
+ARRLEN=${#input[@]}
+echo "The raw input array length is $ARRLEN" >> $log
+echo "The raw input array length is $ARRLEN"
+
+input=`ls $input`
+input=($(echo $input | tr "," " "))
+ARRLEN=${#input[@]}
+echo "The updated input array length is $ARRLEN" >> $log
+echo "The updated input array length is $ARRLEN"
+
 for file in "${input[@]}"
 do
   FILEDEST=`echo $file | perl -ne 'print $_." input\n";'`
-  echo $FILEDEST >> transfer_file.txt
+  echo $FILEDEST >> ifdh_transfer_file.txt
 done
 echo "Transfer file contents: " >> $log
-cat transfer_file.txt >> $log
+cat ifdh_transfer_file.txt >> $log
 if [ "$debug" == "true" ]
 then
     echo "Checking transfer file contents..."
-    cat transfer_file.txt
+    cat ifdh_transfer_file.txt
 fi
 
-ifdh cp -f transfer_file.txt
+ifdh cp -f ifdh_transfer_file.txt
 
 echo "Input folder: " >> $log
 ls -lh input >> $log
