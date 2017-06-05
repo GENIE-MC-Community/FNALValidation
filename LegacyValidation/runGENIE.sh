@@ -2,26 +2,30 @@
 
 while getopts p:o:i:l:c:d: OPT
 do
-  case ${OPT} in
-    p) # path to genie top dir
-      export GENIE=$OPTARG
-      ;;
-    o) # output directory
-      out=$OPTARG
-      ;;
-    i) # input files (fileA fileB fileC...)
-      input=(`echo $OPTARG | sed 's/SPACE/ /g'`)
-      ;;
-    l) # logfile name
-      log=$OPTARG
-      ;;
-    d) # print out to logfile
-      debug=$OPTARG
-      ;;
-    c) # command to run
-      cmd=`echo $OPTARG | sed 's/SPACE/ /g' | sed "s/SQUOTE/'/g"` 
-      ;;
-  esac
+    case ${OPT} in
+        p) # path to genie top dir
+            export GENIE=$OPTARG
+            ;;
+        o) # output directory
+            out=$OPTARG
+            ;;
+        i) # input files (fileA fileB fileC...)
+            if [ "$OPTARG" == "none" ]; then
+                input=$OPTARG
+            else
+                input=(`echo $OPTARG | sed 's/SPACE/ /g'`)
+            fi
+            ;;
+        l) # logfile name
+            log=$OPTARG
+            ;;
+        d) # print out to logfile
+            debug=$OPTARG
+            ;;
+        c) # command to run
+            cmd=`echo $OPTARG | sed 's/SPACE/ /g' | sed "s/SQUOTE/'/g"` 
+            ;;
+    esac
 done
 
 ### setup externals and paths ###
@@ -52,56 +56,67 @@ setup ifdhc
 
 ### load input (if defined) ###
 
-mkdir input
-touch ifdh_transfer_file.txt
+if [ "$input" != "none" ]; then
 
-# try to ifdhcp using a file - make a file and put each input in
-# according to the pattern
-#   input1 input
-#   input2 input
-#   input3 input
-#   (file) (dest directory)
-ARRLEN=${#input[@]}
-echo "The raw input array length is $ARRLEN" >> $log
-echo "The raw input array length is $ARRLEN"
+    echo "input is not none..."
+    echo "input is not none..." >> $log
+    ls $input
+    ls $input >> $log
 
-input=`ls $input`
-input=($(echo $input | tr "," " "))
-ARRLEN=${#input[@]}
-echo "The updated input array length is $ARRLEN" >> $log
-echo "The updated input array length is $ARRLEN"
+    echo "making local input storage folder.."
+    echo "making local input storage folder.." >> $log
+    mkdir input
+    touch ifdh_transfer_file.txt
 
-for file in "${input[@]}"
-do
-  FILEDEST=`echo $file | perl -ne 'print $_." input\n";'`
-  echo $FILEDEST >> ifdh_transfer_file.txt
-done
-echo "Transfer file contents: " >> $log
-cat ifdh_transfer_file.txt >> $log
-if [ "$debug" == "true" ]
-then
-    echo "Checking transfer file contents..."
-    cat ifdh_transfer_file.txt
-fi
+    # try to ifdhcp using a file - make a file and put each input in
+    # according to the pattern
+    #   input1 input
+    #   input2 input
+    #   input3 input
+    #   (file) (dest directory)
+    ARRLEN=${#input[@]}
+    echo "The raw input array length is $ARRLEN" >> $log
+    echo "The raw input array length is $ARRLEN"
 
-ifdh cp -f ifdh_transfer_file.txt
+    input=`ls $input`
+    input=($(echo $input | tr "," " "))
+    ARRLEN=${#input[@]}
+    echo "The updated input array length is $ARRLEN" >> $log
+    echo "The updated input array length is $ARRLEN"
 
-echo "Input folder: " >> $log
-ls -lh input >> $log
-if [ "$debug" == "true" ]
-then
-    echo "Checking input files..."
-    ls input
-fi
+    for file in "${input[@]}"
+    do
+        FILEDEST=`echo $file | perl -ne 'print $_." input\n";'`
+        echo $FILEDEST >> ifdh_transfer_file.txt
+    done
+    echo "Transfer file contents: " >> $log
+    cat ifdh_transfer_file.txt >> $log
+    if [ "$debug" == "true" ]
+    then
+        echo "Checking transfer file contents..."
+        cat ifdh_transfer_file.txt
+    fi
+
+    ifdh cp -f ifdh_transfer_file.txt
+
+    echo "Contents of local input folder: " >> $log
+    ls -lh input >> $log
+    if [ "$debug" == "true" ]
+    then
+        echo "Checking local input folder..."
+        ls input
+    fi
+
+fi  # check `input == none`
 
 ### run the command ###
 
 if [ "$debug" == "true" ]
 then
-  echo "DEBUG MODE ON. ALL OUTPUT WILL BE COPIED TO LOG FILE"
-  $cmd >> $log
+    echo "DEBUG MODE ON. ALL OUTPUT WILL BE COPIED TO LOG FILE"
+    $cmd >> $log
 else
-  $cmd 1>/dev/null 2>$log
+    $cmd 1>/dev/null 2>$log
 fi
 
 ### copy results to scratch
