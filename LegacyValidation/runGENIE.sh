@@ -60,8 +60,8 @@ if [ "$input" != "none" ]; then
 
     echo "input is not none..."
     echo "input is not none..." >> $log
-    ls $input
-    ls $input >> $log
+    ifdh ls $input
+    ifdh ls $input >> $log
 
     echo "making local input storage folder.."
     echo "making local input storage folder.." >> $log
@@ -78,7 +78,7 @@ if [ "$input" != "none" ]; then
     echo "The raw input array length is $ARRLEN" >> $log
     echo "The raw input array length is $ARRLEN"
 
-    input=`ls $input`
+    input=`ifdh ls $input`
     input=($(echo $input | tr "," " "))
     ARRLEN=${#input[@]}
     echo "The updated input array length is $ARRLEN" >> $log
