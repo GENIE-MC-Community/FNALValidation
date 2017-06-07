@@ -60,52 +60,31 @@ if [ "$input" != "none" ]; then
 
     echo "input is not none..."
     echo "input is not none..." >> $log
-    ifdh ls $input
-    ifdh ls $input >> $log
+    idir=`dirname "$input"` 
+    ipat=`basename "$input"`
+    echo "idir = $idir"
+    echo "idir = $idir" >> $log
+    echo "ipat = $ipat"
+    echo "ipat = $ipat" >> $log
+    # recall that `findMatchingFiles` recursively scans subdirs
+    ifdh findMatchingFiles "$idir" "$ipat"
+    ifdh findMatchingFiles "$idir" "$ipat" >> $log
+    inputlist=`ifdh findMatchingFiles "$idir" "$ipat"`
 
     echo "making local input storage folder.."
     echo "making local input storage folder.." >> $log
     mkdir input
-    touch ifdh_transfer_file.txt
+    echo "running ifdh fetch"
+    echo "running ifdh fetch" >> $log
+    IFDH_DATA_DIR=./input ifdh fetchSharedFiles $inputlist
 
-    # try to ifdhcp using a file - make a file and put each input in
-    # according to the pattern
-    #   input1 input
-    #   input2 input
-    #   input3 input
-    #   (file) (dest directory)
-    ARRLEN=${#input[@]}
-    echo "The raw input array length is $ARRLEN" >> $log
-    echo "The raw input array length is $ARRLEN"
-
-    input=`ifdh ls $input`
-    input=($(echo $input | tr "," " "))
-    ARRLEN=${#input[@]}
-    echo "The updated input array length is $ARRLEN" >> $log
-    echo "The updated input array length is $ARRLEN"
-
-    for file in "${input[@]}"
-    do
-        FILEDEST=`echo $file | perl -ne 'print $_." input\n";'`
-        echo $FILEDEST >> ifdh_transfer_file.txt
-    done
-    echo "Transfer file contents: " >> $log
-    cat ifdh_transfer_file.txt >> $log
     if [ "$debug" == "true" ]
     then
-        echo "Checking transfer file contents..."
-        cat ifdh_transfer_file.txt
+        echo "Checking contents of local input folder: "
+        ls -lh input
     fi
-
-    ifdh cp -f ifdh_transfer_file.txt
-
-    echo "Contents of local input folder: " >> $log
+    echo "Checking contents of local input folder: " >> $log
     ls -lh input >> $log
-    if [ "$debug" == "true" ]
-    then
-        echo "Checking local input folder..."
-        ls input
-    fi
 
 fi  # check `input == none`
 
