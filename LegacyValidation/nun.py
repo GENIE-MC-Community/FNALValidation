@@ -170,7 +170,7 @@ def fillDAGMerge (jobsub, tag, out):
   rootFile = "xsec-vN-" + tag + ".root"
   cmd = "gspl2root -p 12,-12,14,-14,16,-16 -t 1000010010,1000000010 -o " + rootFile + " -f input/" + xmlFile
   inputs = out + "/" + xmlFile
-  logFile = "gspladd.log"
+  logFile = "gspl2root.log"
   jobsub.addJob (inputs, out, logFile, cmd)
   # done
   jobsub.add ("</serial>")
