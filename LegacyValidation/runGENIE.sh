@@ -139,6 +139,12 @@ touch copy_files.sh
 find . -type d -exec echo ifdh mkdir $out/{} \; | sed -e "s%\./%%g" >> copy_files.sh
 # now any files (again removing leading ./)
 find . -type f -exec echo ifdh cp {} $out/{} \; | sed -e "s%\./%%g" >> copy_files.sh
+# now take `copy_files.sh` out of the file copy script
+perl -ni -e 'print if !/copy_files/' copy_files.sh
+echo "file copy script contents:"
+cat copy_files.sh
+echo "file copy script contents:" >> $log
+cat copy_files.sh >> $log
 set -x
 source copy_files.sh
 set +x
