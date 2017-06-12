@@ -93,9 +93,9 @@ fi  # check `input == none`
 if [ "$debug" == "true" ]
 then
     echo "DEBUG MODE ON. ALL OUTPUT WILL BE COPIED TO LOG FILE"
-    # $cmd >> $log
-    # "grid debug" -> put output into grid log file?
-    $cmd
+    $cmd >> $log
+    # TODO: "grid debug" -> put output into grid log file?
+    # $cmd
 else
     $cmd 1>/dev/null 2>$log
 fi
