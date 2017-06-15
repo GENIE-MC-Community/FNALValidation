@@ -69,11 +69,11 @@ if __name__ == "__main__":
   nun.fillDAG (jobsub, args.tag, args.paths)
 
   # set optional pieces
-  do_nucleus = False
-  do_mctest = False
-  do_repeat = False
-  do_xsec_val = False
-  do_hadro = False
+  do_nucleus = True
+  do_mctest = True
+  do_repeat = True
+  do_xsec_val = True
+  do_hadro = True
 
   # nucleus cross sections
   if do_nucleus:
