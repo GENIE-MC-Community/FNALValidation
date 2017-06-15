@@ -4,12 +4,14 @@ import os, re, subprocess
 class Jobsub:
     # handle jobsub command for runGENIE.sh in dag file  
     # TODO - need to get more clever with lifetimes for jobs...
-    def __init__ (self, args, lifetime='1h'):
+    def __init__ (self, args, lifetime='23h'):
         """
         init a proper jobsub command for dag
         """
         # -n option is mandatory for jobsub (otherwise jobs will be run twice...)
-        self.basecmd = "jobsub -n --OS=%s --resource-provides=usage_model=%s --timeout 50m -G %s --expected-lifetime=%s file://%s -p %s -d %s" % \
+        # put in `--timeout Nh` or `--timeout Nm` to force a kill after a
+        # period of time (to get logs no matter what) 
+        self.basecmd = "jobsub -n --OS=%s --resource-provides=usage_model=%s -G %s --expected-lifetime=%s file://%s -p %s -d %s" % \
                 (args.os, args.resource, args.group, lifetime, args.run, args.builds + "/" + args.buildName, args.debug)
         # create dag file
         self.dagFile = args.paths['top'] + "/legacyValidation-" + args.tag + \
