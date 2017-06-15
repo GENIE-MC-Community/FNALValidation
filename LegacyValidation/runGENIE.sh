@@ -78,11 +78,8 @@ if [ "$input" != "none" ]; then
     echo "running ifdh fetch" >> $log
     IFDH_DATA_DIR=./input ifdh fetchSharedFiles $inputlist
 
-    if [ "$debug" == "true" ]
-    then
-        echo "Checking contents of local input folder: "
-        ls -lh input
-    fi
+    echo "Checking contents of local input folder: "
+    ls -lh input
     echo "Checking contents of local input folder: " >> $log
     ls -lh input >> $log
 
@@ -97,6 +94,7 @@ then
     # TODO: "grid debug" -> put output into grid log file?
     # $cmd
 else
+    # GENIE is pretty chatty, only save errors to log file
     $cmd 1>/dev/null 2>$log
 fi
 
@@ -128,9 +126,7 @@ then
 fi
 
 ### copy everything from scratch to output 
-# r. hatcher is dubious of `cp -r` in ifdhcp
-# ifdh cp -r scratch $out
-
+# r. hatcher is dubious of `cp -r` in ifdhcp so we build a script.
 # copy files one-by-one after making any necessary subdirectories
 # use -x to enable echoing commands (+x to turn it back off)
 cd scratch
