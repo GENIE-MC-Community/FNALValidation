@@ -4,40 +4,39 @@ import msg
 import re, os
 
 nKnots    = "200" # no. of knots for gmkspl
-nKnots    =  "30" # no. of knots for gmkspl
 maxEnergy = "150" # maximum energy for gmkspl
-maxEnergy =  "50" # maximum energy for gmkspl
 
 # neutrino pdg codes for given job 
-# nuPDG = {'chm'           : '12,-12,14,-14,16,-16',
-#          'nue'           : '12,-12,14,-14,16,-16',
-#          'qel'           : '12,-12,14,-14,16,-16',
-#          'dis_ebar_cc'   : '-12',
-#          'dis_ebar_nc'   : '-12',
-#          'dis_e_cc'      : '12',
-#          'dis_e_nc'      : '12',
-#          'dis_mubar_cc'  : '-14',
-#          'dis_mubar_nc'  : '-14',
-#          'dis_mu_cc'     : '14',
-#          'dis_mu_nc'     : '14',
-#          'dis_taubar_cc' : '-16',
-#          'dis_taubar_nc' : '-16',
-#          'dis_tau_cc'    : '16',
-#          'dis_tau_nc'    : '16',
-#          'res_ebar_cc'   : '-12',
-#          'res_ebar_nc'   : '-12',
-#          'res_e_cc'      : '12',
-#          'res_e_nc'      : '12',
-#          'res_mubar_cc'  : '-14',
-#          'res_mubar_nc'  : '-14',
-#          'res_mu_cc'     : '14',
-#          'res_mu_nc'     : '14',
-#          'res_taubar_cc' : '-16',
-#          'res_taubar_nc' : '-16',
-#          'res_tau_cc'    : '16',
-#          'res_tau_nc'    : '16' }
-nuPDG = {'qel'           : '12,-12,14,-14',
-         'nue'           : '12,-12,14,-14'}
+nuPDG = {'chm'           : '12,-12,14,-14,16,-16',
+         'nue'           : '12,-12,14,-14,16,-16',
+         'qel'           : '12,-12,14,-14,16,-16',
+         'dis_ebar_cc'   : '-12',
+         'dis_ebar_nc'   : '-12',
+         'dis_e_cc'      : '12',
+         'dis_e_nc'      : '12',
+         'dis_mubar_cc'  : '-14',
+         'dis_mubar_nc'  : '-14',
+         'dis_mu_cc'     : '14',
+         'dis_mu_nc'     : '14',
+         'dis_taubar_cc' : '-16',
+         'dis_taubar_nc' : '-16',
+         'dis_tau_cc'    : '16',
+         'dis_tau_nc'    : '16',
+         'res_ebar_cc'   : '-12',
+         'res_ebar_nc'   : '-12',
+         'res_e_cc'      : '12',
+         'res_e_nc'      : '12',
+         'res_mubar_cc'  : '-14',
+         'res_mubar_nc'  : '-14',
+         'res_mu_cc'     : '14',
+         'res_mu_nc'     : '14',
+         'res_taubar_cc' : '-16',
+         'res_taubar_nc' : '-16',
+         'res_tau_cc'    : '16',
+         'res_tau_nc'    : '16' }
+# for debugging, can use a short set
+# nuPDG = {'qel'           : '12,-12,14,-14',
+#          'nue'           : '12,-12,14,-14'}
          
 # target pdg codes for given job 
 targetPDG = {'chm'           : '1000010010,1000000010',
