@@ -35,6 +35,12 @@ def getArgs(
             help = "default = false"
             )
 
+# comparisons (validation) is now a separate package
+    parser.add_argument("--comp_tag", action = "store", dest = "cmptag",
+            metavar = "[comparisons tag]", default = "trunk",
+            help = "default = trunk"
+            )
+
     required = parser.add_argument_group("required arguments")
     required.add_argument(
             "--genie_tag", action = "store", dest = "tag",

@@ -2,8 +2,22 @@
 
 # GENIE Legacy Validation based on src/scripts/production/batch
 
+# example format:
+# ./runLegacyValidation.py --genie_tag R-2_12_0  \ 
+#                          --run_path /grid/fermiapp/genie/legacyValidation_update_1/runGENIE.sh \
+#                          --builds /grid/fermiapp/genie/builds_update \ 
+#                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation
+
 from jobsub import Jobsub
-import parser, jenkins, msg, nun, nua, standard, reptest, xsecval, hadronization
+# various services
+import parser, jenkins, msg 
+# xsec splines
+import nun, nua
+# old-style (legacy) validation tests
+import standard, reptest, xsecval, hadronization
+# new-style validation (minerva, etc.)
+import minerva
+# general
 import os, datetime
 
 def initMessage (args):
@@ -35,6 +49,7 @@ def preparePaths (path):
   paths['reptest'] = path + "/events/repeatability"
   paths['xsecval'] = path + "/events/xsec_validation"
   paths['hadron']  = path + "/events/hadronization"
+  paths['minerva'] = path + "/events/minerva"
   # reports
   paths['reports'] = path + "/reports"
   paths['sanity']  = path + "/reports/sanity_mctest"
@@ -42,6 +57,7 @@ def preparePaths (path):
   paths['xseclog'] = path + "/reports/xsec_validation"
   paths['xsecsng'] = path + "/reports/xsec_validation/single_comparisons_with_errors"
   paths['hadrep']  = path + "/reports/hadronization_test"
+  paths['minervarep'] = path + "/reports/minerva"
   # create all directiories
   for p in paths.values():
     if not os.path.exists (p): os.makedirs (p)
@@ -51,13 +67,20 @@ def preparePaths (path):
 if __name__ == "__main__":
   # parse command line arguments
   args = parser.getArgs()
-  # find most recent build if date was not defined
-  if args.build_date is None: args.build_date = jenkins.findLast (args.tag)
+  #
+  # find most recent build if date was not defined 
+  # NOTE: need to check if the two build dates are consistent !       
+  if args.build_date is None:
+     args.build_date = jenkins.findLast("generator",args.tag)
+     args.build_date = jenkins.findLast("comparisons",args.cmptag)
   # print configuration summary
   initMessage (args)
-  # get build
+  #
+  # print configuration summary
   msg.info ("Getting GENIE from jenkins...\n")
-  args.buildName = jenkins.getBuild (args.tag, args.build_date, args.builds)
+  # get build
+  args.buildNameGE  = jenkins.getBuild ("generator",args.tag, args.build_date, args.builds)
+  args.buildNameCmp = jenkins.getBuild ("comparisons",args.cmptag, args.build_date, args.builds)
   # preapre folder structure for output
   args.paths = preparePaths (args.output + "/" + args.tag + "/" + args.build_date)
   # initialize jobsub
@@ -74,6 +97,7 @@ if __name__ == "__main__":
   do_repeat = True
   do_xsec_val = True
   do_hadro = True
+  do_minerva = True
 
   # nucleus cross sections
   if do_nucleus:
@@ -90,5 +114,8 @@ if __name__ == "__main__":
   # hadronization test
   if do_hadro:
     hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+  # MINERvA test
+  if do_minerva:
+    minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.builds+"/"+args.buildNameCmp )
   # dag file done, submit jobs
   jobsub.submit()
