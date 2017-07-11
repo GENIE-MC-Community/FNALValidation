@@ -20,29 +20,29 @@ data_struct = {
    'nu-CoherentPi' : { 'projectile' : '14', 'energy' : '1.5,20.',
                        'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nu-flux-MINERvA.data',
                        'releaselabel' : 'numu_r2014',
-		       'datafiles' : [ 'Release-2014/CoherentPion/nu-Hydrocarbon-PionEnergy.data' 
+		       'datafiles' : [ 'Release-2014/CoherentPion/nu-Hydrocarbon-PionEnergy.data', 
 		                       'Release-2014/CoherentPion/nu-Hydrocarbon-PionPolarAngle.data'
 				     ],
 		       'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
 		                            'MINERvACoherentPionPolarAngle' 
 					 ]  
                      }, 
-   'nu-CCMuProtonFS' : { 'projectile' : '14', 'energy' : '0.,100.',
-                         'flux' : 'data/fluxes/minerva/Release-2015/MuProtonFS/nu-flux-MINERvA.data',
-			 'releaselabel' : 'numu_r2015',
-			 'datafiles' : ['Release-2015/MuProtonFS/nu-Hydrocarbon-CCMuPfsQ2P.data'],
-			 'mcpredictions' : ['MINERvACCMuProtonFSQ2P']
-                     }, 
-   'nu-1ChgPion' : { 'projectile' : '14', 'energy' : 'FIXME !!!',
-                     'flux' : 'data/fluxes/minerva/Release-2015/ChargedPion/nu-flux-MINERvA.data',
-                     'releaselabel' : 'numu_r2015',
-		     'datafiles' : [ 'Release-2015/ChargedPion/nu-Hydrocarbon-1ChgPionEnergy.data', 
-		                     'Release-2015/ChargedPion/nu-Hydrocarbon-1ChgPionPolarAngle.data' 
-				   ],
-		     'mcpredictions' : [ 'MINERvACC1pichgEnergy', 
-		                         'MINERvACC1pichgPolarAngle' 
-				       ]
-		   },
+#   'nu-CCMuProtonFS' : { 'projectile' : '14', 'energy' : '0.,100.',
+#                         'flux' : 'data/fluxes/minerva/Release-2015/MuProtonFS/nu-flux-MINERvA.data',
+#			 'releaselabel' : 'numu_r2015',
+#			 'datafiles' : ['Release-2015/MuProtonFS/nu-Hydrocarbon-CCMuPfsQ2P.data'],
+#			 'mcpredictions' : ['MINERvACCMuProtonFSQ2P']
+#                     }, 
+#   'nu-1ChgPion' : { 'projectile' : '14', 'energy' : '1.5,10.',
+#                     'flux' : 'data/fluxes/minerva/Release-2015/ChargedPion/nu-flux-MINERvA.data',
+#                     'releaselabel' : 'numu_r2015',
+#		     'datafiles' : [ 'Release-2015/ChargedPion/nu-Hydrocarbon-1ChgPionEnergy.data', 
+#		                     'Release-2015/ChargedPion/nu-Hydrocarbon-1ChgPionPolarAngle.data' 
+#				   ],
+#		     'mcpredictions' : [ 'MINERvACC1pichgEnergy', 
+#		                         'MINERvACC1pichgPolarAngle' 
+#				       ]
+#		   },
    'nubar-CCQEQ2' : { 'projectile' : '-14', 'energy' : '1.5,10.',
                       'flux' : 'data/fluxes/minerva/Release-2013/CCQEQ2/nubar-flux-MINERvA.data',
 		      'releaselabel' : 'numubar_2013',
@@ -52,28 +52,28 @@ data_struct = {
    'nubar-CoherentPi' : { 'projectile' : '-14', 'energy' : '1.5,20.',
                           'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nubar-flux-MINERvA.data',
                           'releaselabel' : 'numubar_r2014',
-		          'datafiles' : [ 'Release-2014/CoherentPion/nubar-Hydrocarbon-PionEnergy.data' 
+		          'datafiles' : [ 'Release-2014/CoherentPion/nubar-Hydrocarbon-PionEnergy.data', 
 		                          'Release-2014/CoherentPion/nubar-Hydrocarbon-PionPolarAngle.data'
 				        ],
 		          'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
 		                              'MINERvACoherentPionPolarAngle' 
 					    ]  
-                        }, 
-   'nubar-CC1Pi0' : { 'projectile' : '-14', 'energy' : '0.1,20.',
-                      'flux' : 'data/fluxes/minerva/Release-2015/SinglePi0/nubar-flux-MINERvA.data',
-                      'releaselabel' : 'numu_r2015',
-		      'datafiles' : [ 'Release-2015/SinglePi0/nubar-Hydrocarbon-cc1pi0Momentum.data', 
-		                      'Release-2015/SinglePi0/nubar-Hydrocarbon-cc1pi0PolarAngle.data' 
-				    ],
-		      'mcpredictions' : [ 'MINERvACC1pi0Momentum', 
-		                          'MINERvACC1pi0PolarAngle' 
-					]
-                  }
+                        }   #, 
+#   'nubar-CC1Pi0' : { 'projectile' : '-14', 'energy' : '0.1,20.',
+#                      'flux' : 'data/fluxes/minerva/Release-2015/SinglePi0/nubar-flux-MINERvA.data',
+#                      'releaselabel' : 'numu_r2015',
+#		      'datafiles' : [ 'Release-2015/SinglePi0/nubar-Hydrocarbon-cc1pi0Momentum.data', 
+#		                      'Release-2015/SinglePi0/nubar-Hydrocarbon-cc1pi0PolarAngle.data' 
+#				    ],
+#		      'mcpredictions' : [ 'MINERvACC1pi0Momentum', 
+#		                          'MINERvACC1pi0PolarAngle' 
+#					]
+#                  }
 }
 
 def fillDAG( jobsub, tag, date, paths, gcmp ):
    fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'], gcmp )
-   createCmpConfigs( tag, date, paths['minervarep'])
+   createCmpConfigs( tag, date, paths['minervarep'], gcmp )
    fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['minerva'], paths['minervarep'] )
 
 def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, gcmp ):
@@ -105,7 +105,7 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, gcmp ):
    # done
    jobsub.add ("</parallel>")
 
-def createCmpConfigs( tag, date, reportdir ):
+def createCmpConfigs( tag, date, reportdir, gcmp ):
 
    # start GLOBAL CMP CONFIG
    gcfg = reportdir + "/global-minerva-cfg-" + tag + "_" + date + ".xml"
@@ -115,11 +115,13 @@ def createCmpConfigs( tag, date, reportdir ):
    print >>gxml, '<?xml version="1.0" encoding="ISO-8859-1"?>'
    print >>gxml, '<config>'
    print >>gxml, '\t<experiment name="MINERvA">'
-   print >>gxml, '\t\t<paths_relative_to_geniecmp_topdir> true </paths_relative_to_geniecmp_topdir>'
+   print >>gxml, '\t\t<paths_relative_to_geniecmp_topdir> false </paths_relative_to_geniecmp_topdir>'
 
    # in the loop, create GSim cfg files and also put their names in the global cfg
    for key in data_struct.iterkeys():
-      xmlfile = reportdir + "/gsimfile-" + tag + "-" + date + "-minerva-" + key + ".xml"
+      gsimfile = "gsimfile-" + tag + "-" + date + "-minerva-" + key + ".xml"
+      # ---> xmlfile = reportdir + "/gsimfile-" + tag + "-" + date + "-minerva-" + key + ".xml"
+      xmlfile = reportdir + gsimfile
       try: os.remove(xmlfile)
       except OSError: pass
       xml = open( xmlfile, 'w' )
@@ -135,12 +137,13 @@ def createCmpConfigs( tag, date, reportdir ):
 
       for i in range( len( data_struct[key]['datafiles'] ) ):
          print >>gxml, '\t\t\t\t<spec>'
-         print >>gxml, '\t\t\t\t\t<path2data> data/measurements/vA/minerva' + data_struct[key]['datafiles'][i] + ' </path2data>'
+         print >>gxml, '\t\t\t\t\t<path2data> ' + gcmp + '/data/measurements/vA/minerva/' + data_struct[key]['datafiles'][i] + ' </path2data>'
          print >>gxml, '\t\t\t\t\t<dataclass> MINERvAExData </dataclass>'
          print >>gxml, '\t\t\t\t\t<predictionclass> ' + data_struct[key]['mcpredictions'][i] + ' </predictionclass>'
          print >>gxml, '\t\t\t\t</spec>'
       
-      print >>gxml, '\t\t\t\t<genie> ' + xmlfile + ' </genie>'
+      # ---> print >>gxml, '\t\t\t\t<genie> ' + xmlfile + ' </genie>'
+      print >>gxml, '\t\t\t\t<genie> input/' + gsimfile + ' </genie>'
       print >>gxml, '\t\t\t</comparison>'
    
    # now finish up and close global config
@@ -163,7 +166,9 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir ):
    plotfile = "genie_" + tag + "-minerva.pdf"
    cmd = "gvld_general_comparison --global-config input/" + config + " -o " + plotfile
    # add the command to dag
-   inputs = reportdir + "/" + config + " " + xsec_a_path + "/xsec-vA-" + tag + ".root " + plotfile + "/*.ghep.root"
+   # inputs = reportdir + "/" + config + " " + xsec_a_path + "/xsec-vA-" + tag + ".root " + plotfile + "/*.ghep.root"
+   # FIXME !!!
+   inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root"
    logfile = "gvld_general_comparison.log"
    jobsub.addJob ( inputs, reportdir, logfile, cmd )
    # done

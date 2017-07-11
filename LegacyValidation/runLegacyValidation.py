@@ -3,13 +3,10 @@
 # GENIE Legacy Validation based on src/scripts/production/batch
 
 # example format:
-# ./runLegacyValidation.py --genie_tag trunk  \ 
+# ./runLegacyValidation.py --genie_tag R-2_12_0  \ 
 #                          --run_path /grid/fermiapp/genie/legacyValidation_update_1/runGENIE.sh \
 #                          --builds /grid/fermiapp/genie/builds_update \ 
 #                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation
-# GENIE tags can also be R-2_12_4, etc.
-#
-
 
 from jobsub import Jobsub
 # various services

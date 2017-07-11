@@ -51,8 +51,8 @@ export LD_LIBRARY_PATH=$GENIE/lib:$GENIE_COMPARISONS/lib:$LD_LIBRARY_PATH
 export PATH=$GENIE/bin:$GENIE_COMPARISONS/bin:$PATH
 
 echo "Command: "$cmd > $log
-echo "Input folder: " >> $log
-ls -lh input >> $log
+# echo "Input folder: " >> $log
+# ls -lh input >> $log
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH" >> $log
 echo "PATH = $PATH" >> $log
 echo "GENIE = $GENIE" >> $log
@@ -65,12 +65,54 @@ setup ifdhc
 
 ### load input (if defined) ###
 
-mkdir input
+#mkdir input
+#for file in "${input[@]}"
+#do
+#  ifdh cp $file input
+#done
 
-for file in "${input[@]}"
+if [ "$input" != "none" ]; then
+
+    echo "input is not none..."
+    echo "input is not none..." >> $log
+
+for token in "${input[@]}"
 do
-  ifdh cp $file input
-done
+
+    idir=`dirname "$token"` 
+    ipat=`basename "$token"`
+# -->     idir=`dirname "$input"` 
+# -->    ipat=`basename "$input"`
+    echo "idir = $idir"
+    echo "idir = $idir" >> $log
+    echo "ipat = $ipat"
+    echo "ipat = $ipat" >> $log
+    # recall that `findMatchingFiles` recursively scans subdirs
+    ifdh findMatchingFiles "$idir" "$ipat"
+    ifdh findMatchingFiles "$idir" "$ipat" >> $log
+    inputlist=`ifdh findMatchingFiles "$idir" "$ipat"`
+
+    echo "making local input storage folder if not there yet.."
+    echo "making local input storage folder if not there yet.." >> $log
+    if [ ! -d "input" ]; then
+       mkdir input
+    fi
+
+    echo "running ifdh fetch"
+    echo "running ifdh fetch" >> $log
+    IFDH_DATA_DIR=./input ifdh fetchSharedFiles $inputlist
+
+    if [ "$debug" == "true" ]
+    then
+        echo "Checking contents of local input folder: "
+        ls -lh input
+    fi
+    echo "Checking contents of local input folder: " >> $log
+    ls -lh input >> $log
+
+done # end loop over tokens in input
+
+fi  # check `input == none`
 
 ### run the command ###
 
@@ -78,11 +120,25 @@ if [ "$debug" == "true" ]
 then
   echo "DEBUG MODE ON. ALL OUTPUT WILL BE COPIED TO LOG FILE"
   $cmd >> $log
+    # TODO: "grid debug" -> put output into grid log file?
+    # $cmd
 else
+    # GENIE is pretty chatty, only save errors to log file
   $cmd 1>/dev/null 2>$log
 fi
 
 ### copy results to scratch
+
+# first, remove size zero log files
+logs=`ls *.log`
+for logfile in $logs
+do
+    echo $logfile
+    if [[ ! -s $logfile ]]; then
+        echo "... is a zero size file, removing!"
+        rm $logfile
+    fi
+done
 
 mkdir scratch
 mv *.root scratch
@@ -92,10 +148,14 @@ mv *.eps scratch
 mv *.ps scratch
 mv *.pdf scratch
 
-### copy everything from scratch to output 
-# r. hatcher is dubious of `cp -r` in ifdhcp
-# ifdh cp -r scratch $out
+if [ "$debug" == "true" ]
+then
+    echo "Checking output files..."
+    ls scratch
+fi
 
+### copy everything from scratch to output 
+# r. hatcher is dubious of `cp -r` in ifdhcp so we build a script.
 # copy files one-by-one after making any necessary subdirectories
 # use -x to enable echoing commands (+x to turn it back off)
 cd scratch
@@ -106,6 +166,12 @@ touch copy_files.sh
 find . -type d -exec echo ifdh mkdir $out/{} \; | sed -e "s%\./%%g" >> copy_files.sh
 # now any files (again removing leading ./)
 find . -type f -exec echo ifdh cp {} $out/{} \; | sed -e "s%\./%%g" >> copy_files.sh
+# now take `copy_files.sh` out of the file copy script
+perl -ni -e 'print if !/copy_files/' copy_files.sh
+echo "file copy script contents:"
+cat copy_files.sh
+echo "file copy script contents:" >> $log
+cat copy_files.sh >> $log
 set -x
 source copy_files.sh
 set +x
