@@ -1,20 +1,19 @@
 #!/bin/bash
 
-while getopts p:o:i:l:c:d: OPT
+while getopts p:v:o:i:l:c:d: OPT
 do
     case ${OPT} in
         p) # path to genie top dir
             export GENIE=$OPTARG
             ;;
+        v) # path to comparisons top dir
+            export GENIE_COMPARISONS=$OPTARG
+            ;;
         o) # output directory
             out=$OPTARG
             ;;
         i) # input files (fileA fileB fileC...)
-            if [ "$OPTARG" == "none" ]; then
-                input=$OPTARG
-            else
-                input=(`echo $OPTARG | sed 's/SPACE/ /g'`)
-            fi
+            input=(`echo $OPTARG | sed 's/SPACE/ /g'`)
             ;;
         l) # logfile name
             log=$OPTARG
@@ -36,12 +35,20 @@ done
 # bootstrap setup off larsoft repo...
 source /grid/fermiapp/products/genie/bootstrap_genie_ups.sh
 
-setup root v5_34_25a -q debug:e7:nu
-setup lhapdf v5_9_1b -q debug:e7
-setup log4cpp v1_1_1b -q debug:e7
+# These don't need to be debug 
+#
+#setup root v5_34_25a -q debug:e7:nu
+#setup lhapdf v5_9_1b -q debug:e7
+#setup log4cpp v1_1_1b -q debug:e7
 
-export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
-export PATH=$GENIE/bin:$PATH
+# switch to the optimized ones
+#
+setup root v5_34_25a -q e7:nu:prof
+setup lhapdf v5_9_1b -q e7:prof
+setup log4cpp v1_1_1b -q e7:prof
+
+export LD_LIBRARY_PATH=$GENIE/lib:$GENIE_COMPARISONS/lib:$LD_LIBRARY_PATH
+export PATH=$GENIE/bin:$GENIE_COMPARISONS/bin:$PATH
 
 echo "Command: "$cmd > $log
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH" >> $log
@@ -60,29 +67,38 @@ if [ "$input" != "none" ]; then
 
     echo "input is not none..."
     echo "input is not none..." >> $log
-    idir=`dirname "$input"` 
-    ipat=`basename "$input"`
-    echo "idir = $idir"
-    echo "idir = $idir" >> $log
-    echo "ipat = $ipat"
-    echo "ipat = $ipat" >> $log
-    # recall that `findMatchingFiles` recursively scans subdirs
-    ifdh findMatchingFiles "$idir" "$ipat"
-    ifdh findMatchingFiles "$idir" "$ipat" >> $log
-    inputlist=`ifdh findMatchingFiles "$idir" "$ipat"`
 
-    echo "making local input storage folder.."
-    echo "making local input storage folder.." >> $log
-    mkdir input
-    echo "running ifdh fetch"
-    echo "running ifdh fetch" >> $log
-    IFDH_DATA_DIR=./input ifdh fetchSharedFiles $inputlist
+    for token in "${input[@]}"
+    do
+        idir=`dirname "$token"` 
+        ipat=`basename "$token"`
+        echo "idir = $idir"
+        echo "idir = $idir" >> $log
+        echo "ipat = $ipat"
+        echo "ipat = $ipat" >> $log
+        # recall that `findMatchingFiles` recursively scans subdirs
+        ifdh findMatchingFiles "$idir" "$ipat"
+        ifdh findMatchingFiles "$idir" "$ipat" >> $log
+        inputlist=`ifdh findMatchingFiles "$idir" "$ipat"`
 
-    echo "Checking contents of local input folder: "
-    ls -lh input
-    echo "Checking contents of local input folder: " >> $log
-    ls -lh input >> $log
+        echo "making local input storage folder if not there yet.."
+        echo "making local input storage folder if not there yet.." >> $log
+        if [ ! -d "input" ]; then
+            mkdir input
+        fi
 
+        echo "running ifdh fetch"
+        echo "running ifdh fetch" >> $log
+        IFDH_DATA_DIR=./input ifdh fetchSharedFiles $inputlist
+
+        if [ "$debug" == "true" ]
+        then
+            echo "Checking contents of local input folder: "
+            ls -lh input
+        fi
+        echo "Checking contents of local input folder: " >> $log
+        ls -lh input >> $log
+    done # end loop over tokens in input
 fi  # check `input == none`
 
 ### run the command ###
