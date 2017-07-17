@@ -119,7 +119,7 @@ def createCmpConfigs( tag, date, reportdir, gcmp ):
 
    # in the loop, create GSim cfg files and also put their names in the global cfg
    for key in data_struct.iterkeys():
-      gsimfile = "gsimfile-" + tag + "-" + date + "-minerva-" + key + ".xml"
+      gsimfile = "/gsimfile-" + tag + "-" + date + "-minerva-" + key + ".xml"
       # ---> xmlfile = reportdir + "/gsimfile-" + tag + "-" + date + "-minerva-" + key + ".xml"
       xmlfile = reportdir + gsimfile
       try: os.remove(xmlfile)
@@ -166,8 +166,6 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir ):
    plotfile = "genie_" + tag + "-minerva.pdf"
    cmd = "gvld_general_comparison --global-config input/" + config + " -o " + plotfile
    # add the command to dag
-   # inputs = reportdir + "/" + config + " " + xsec_a_path + "/xsec-vA-" + tag + ".root " + plotfile + "/*.ghep.root"
-   # FIXME !!!
    inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root"
    logfile = "gvld_general_comparison.log"
    jobsub.addJob ( inputs, reportdir, logfile, cmd )
