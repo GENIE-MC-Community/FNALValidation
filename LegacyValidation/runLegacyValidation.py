@@ -85,37 +85,21 @@ if __name__ == "__main__":
   args.paths = preparePaths (args.output + "/" + args.tag + "/" + args.build_date)
   # initialize jobsub
   jobsub = Jobsub (args)
-
   # fill dag files with jobs
   msg.info ("Adding jobs to dag file: " + jobsub.dagFile + "\n")
-  # nucleon cross sections - always do this
+  # nucleon cross sections
   nun.fillDAG (jobsub, args.tag, args.paths)
-
-  # set optional pieces
-  do_nucleus = True
-  do_mctest = True
-  do_repeat = True
-  do_xsec_val = True
-  do_hadro = True
-  do_minerva = True
-
   # nucleus cross sections
-  if do_nucleus:
-    nua.fillDAG (jobsub, args.tag, args.paths)
-  # standard mctest sanity
-  if do_mctest:
-    standard.fillDAG (jobsub, args.tag, args.paths)
+  nua.fillDAG (jobsub, args.tag, args.paths)
+  # standard mctest sanity (events scan)
+  standard.fillDAG (jobsub, args.tag, args.paths)
   # repeatability test
-  if do_repeat:
-    reptest.fillDAG (jobsub, args.tag, args.paths)
+# -->  reptest.fillDAG (jobsub, args.tag, args.paths)
   # xsec validation
-  if do_xsec_val:
-    xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+# -->  xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
   # hadronization test
-  if do_hadro:
-    hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+  hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths )
   # MINERvA test
-  if do_minerva:
-    minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.builds+"/"+args.buildNameCmp )
+  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.builds+"/"+args.buildNameCmp )
   # dag file done, submit jobs
   jobsub.submit()

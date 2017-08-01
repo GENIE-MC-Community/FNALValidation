@@ -183,12 +183,14 @@ def fillDAG_sanity (jobsub, events, out):
             " --check-for-num-of-final-state-nucleons-inconsistent-with-target " + \
             " --check-vertex-distribution " + \
             " --check-decayer-consistency"
-  # loop over keys and generate gvld_sample_scan command
+  # loop over keys and generate gevscan command
+  # NOTE (JVY): gvld_sample_scan name is obsolete; it's beem replaced by gevscan as the app has moved to src/Apps
   for key in nuPDG.iterkeys():
     inputFile = "gntp." + key + ".ghep.root"
     output = "gntp." + key + ".ghep.root.sanity.log"
-    cmd = "gvld_sample_scan -f input/" + inputFile + " -o " + output + options
-    logFile = "gvld_sample_scan." + key + ".log"
+# --> old name -->    cmd = "gvld_sample_scan -f input/" + inputFile + " -o " + output + options
+    cmd = "gevscan -f input/" + inputFile + " -o " + output + options
+    logFile = "gevscan." + key + ".log"
     jobsub.addJob (events + "/" + inputFile, out, logFile, cmd)
   # done
   jobsub.add ("</parallel>")
