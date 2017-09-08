@@ -369,12 +369,12 @@ comparisons = {
 			          'mcpredictions' : ['INXSPredExclPion'],
 			          'outprefix' : 'c10c01_'
 			        },
-   'cmp_numuCCppi+pi-_ANL_12FT,11' :   { 'datafiles' : ['numuCCppi+pi0_ANL_12FT,11.xml'],
+   'cmp_numuCCppi+pi-_ANL_12FT,11' :   { 'datafiles' : ['numuCCppi+pi-_ANL_12FT,11.xml'],
                                          'dataclass' : 'INXSDataSet',
 			                 'mcpredictions' : ['INXSPredExclPion'],
 			                 'outprefix' : 'c10d01_'
 			               },
-   'cmp_numuCCppi+pi-_BNL_7FT,8' :   { 'datafiles' : ['numuCCppi+pi0_BNL_7FT,8.xml'],
+   'cmp_numuCCppi+pi-_BNL_7FT,8' :   { 'datafiles' : ['numuCCppi+pi-_BNL_7FT,8.xml'],
                                        'dataclass' : 'INXSDataSet',
 			               'mcpredictions' : ['INXSPredExclPion'],
 			               'outprefix' : 'c10d02_'
