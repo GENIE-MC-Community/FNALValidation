@@ -2,29 +2,29 @@
 
 while getopts p:v:o:i:l:c:d: OPT
 do
-    case ${OPT} in
-        p) # path to genie top dir
-            export GENIE=$OPTARG
-            ;;
-        v) # path to comparisons top dir
-            export GENIE_COMPARISONS=$OPTARG
-            ;;
-        o) # output directory
-            out=$OPTARG
-            ;;
-        i) # input files (fileA fileB fileC...)
-            input=(`echo $OPTARG | sed 's/SPACE/ /g'`)
-            ;;
-        l) # logfile name
-            log=$OPTARG
-            ;;
-        d) # print out to logfile
-            debug=$OPTARG
-            ;;
-        c) # command to run
-            cmd=`echo $OPTARG | sed 's/SPACE/ /g' | sed "s/SQUOTE/'/g"` 
-            ;;
-    esac
+  case ${OPT} in
+    p) # path to genie top dir
+      export GENIE=$OPTARG
+      ;;
+    v) # path to comparisons top dir
+      export GENIE_COMPARISONS=$OPTARG
+      ;;
+    o) # output directory
+      out=$OPTARG
+      ;;
+    i) # input files (fileA fileB fileC...)
+      input=(`echo $OPTARG | sed 's/SPACE/ /g'`)
+      ;;
+    l) # logfile name
+      log=$OPTARG
+      ;;
+    d) # print out to logfile
+      debug=$OPTARG
+      ;;
+    c) # command to run
+      cmd=`echo $OPTARG | sed 's/SPACE/ /g' | sed "s/SQUOTE/'/g"` 
+      ;;
+  esac
 done
 
 ### setup externals and paths ###
@@ -51,6 +51,8 @@ export LD_LIBRARY_PATH=$GENIE/lib:$GENIE_COMPARISONS/lib:$LD_LIBRARY_PATH
 export PATH=$GENIE/bin:$GENIE_COMPARISONS/bin:$PATH
 
 echo "Command: "$cmd > $log
+# echo "Input folder: " >> $log
+# ls -lh input >> $log
 echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH" >> $log
 echo "PATH = $PATH" >> $log
 echo "GENIE = $GENIE" >> $log
@@ -63,55 +65,69 @@ setup ifdhc
 
 ### load input (if defined) ###
 
+#mkdir input
+#for file in "${input[@]}"
+#do
+#  ifdh cp $file input
+#done
+
+# make a local copy od whatever /data from comparisons
+cp -r $GENIE_COMPARISONS/data .
+
 if [ "$input" != "none" ]; then
 
     echo "input is not none..."
     echo "input is not none..." >> $log
 
-    for token in "${input[@]}"
-    do
-        idir=`dirname "$token"` 
-        ipat=`basename "$token"`
-        echo "idir = $idir"
-        echo "idir = $idir" >> $log
-        echo "ipat = $ipat"
-        echo "ipat = $ipat" >> $log
-        # recall that `findMatchingFiles` recursively scans subdirs
-        ifdh findMatchingFiles "$idir" "$ipat"
-        ifdh findMatchingFiles "$idir" "$ipat" >> $log
-        inputlist=`ifdh findMatchingFiles "$idir" "$ipat"`
+for token in "${input[@]}"
+do
 
-        echo "making local input storage folder if not there yet.."
-        echo "making local input storage folder if not there yet.." >> $log
-        if [ ! -d "input" ]; then
-            mkdir input
-        fi
+    idir=`dirname "$token"` 
+    ipat=`basename "$token"`
+# -->     idir=`dirname "$input"` 
+# -->    ipat=`basename "$input"`
+    echo "idir = $idir"
+    echo "idir = $idir" >> $log
+    echo "ipat = $ipat"
+    echo "ipat = $ipat" >> $log
+    # recall that `findMatchingFiles` recursively scans subdirs
+    ifdh findMatchingFiles "$idir" "$ipat"
+    ifdh findMatchingFiles "$idir" "$ipat" >> $log
+    inputlist=`ifdh findMatchingFiles "$idir" "$ipat"`
 
-        echo "running ifdh fetch"
-        echo "running ifdh fetch" >> $log
-        IFDH_DATA_DIR=./input ifdh fetchSharedFiles $inputlist
+    echo "making local input storage folder if not there yet.."
+    echo "making local input storage folder if not there yet.." >> $log
+    if [ ! -d "input" ]; then
+       mkdir input
+    fi
 
-        if [ "$debug" == "true" ]
-        then
-            echo "Checking contents of local input folder: "
-            ls -lh input
-        fi
-        echo "Checking contents of local input folder: " >> $log
-        ls -lh input >> $log
-    done # end loop over tokens in input
+    echo "running ifdh fetch"
+    echo "running ifdh fetch" >> $log
+    IFDH_DATA_DIR=./input ifdh fetchSharedFiles $inputlist
+
+    if [ "$debug" == "true" ]
+    then
+        echo "Checking contents of local input folder: "
+        ls -lh input
+    fi
+    echo "Checking contents of local input folder: " >> $log
+    ls -lh input >> $log
+
+done # end loop over tokens in input
+
 fi  # check `input == none`
 
 ### run the command ###
 
 if [ "$debug" == "true" ]
 then
-    echo "DEBUG MODE ON. ALL OUTPUT WILL BE COPIED TO LOG FILE"
-    $cmd >> $log
+  echo "DEBUG MODE ON. ALL OUTPUT WILL BE COPIED TO LOG FILE"
+  $cmd >> $log
     # TODO: "grid debug" -> put output into grid log file?
     # $cmd
 else
     # GENIE is pretty chatty, only save errors to log file
-    $cmd 1>/dev/null 2>$log
+  $cmd 1>/dev/null 2>$log
 fi
 
 ### copy results to scratch
@@ -126,6 +142,9 @@ do
         rm $logfile
     fi
 done
+
+# remove input-flux.root if any
+rm -f input-flux.root
 
 mkdir scratch
 mv *.root scratch

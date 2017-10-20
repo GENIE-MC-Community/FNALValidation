@@ -3,7 +3,7 @@
 # GENIE Legacy Validation based on src/scripts/production/batch
 
 # example format:
-# ./runLegacyValidation.py --genie_tag R-2_12_0  \ 
+# ./runLegacyValidation.py --genie_tag R-2_12_6  \ 
 #                          --run_path /grid/fermiapp/genie/legacyValidation_update_1/runGENIE.sh \
 #                          --builds /grid/fermiapp/genie/builds_update \ 
 #                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation
@@ -55,7 +55,7 @@ def preparePaths (path):
   paths['sanity']  = path + "/reports/sanity_mctest"
   paths['replog']  = path + "/reports/repeatability_test"
   paths['xseclog'] = path + "/reports/xsec_validation"
-  paths['xsecsng'] = path + "/reports/xsec_validation/single_comparisons_with_errors"
+  # --> no longer needed --> paths['xsecsng'] = path + "/reports/xsec_validation/single_comparisons_with_errors"
   paths['hadrep']  = path + "/reports/hadronization_test"
   paths['minervarep'] = path + "/reports/minerva"
   # create all directiories
@@ -94,12 +94,14 @@ if __name__ == "__main__":
   # standard mctest sanity (events scan)
   standard.fillDAG (jobsub, args.tag, args.paths)
   # repeatability test
-# -->  reptest.fillDAG (jobsub, args.tag, args.paths)
+# --> NO TRACK OF ANY SUCH UTILITY -->  reptest.fillDAG (jobsub, args.tag, args.paths)
   # xsec validation
-# -->  xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+# --> OLD -->   xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
+# --> INTERMEDIATE -->  xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.builds+"/"+args.buildNameCmp )
+  xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths )
   # hadronization test
   hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths )
   # MINERvA test
-  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.builds+"/"+args.buildNameCmp )
+  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths )
   # dag file done, submit jobs
   jobsub.submit()

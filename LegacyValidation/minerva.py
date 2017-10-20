@@ -71,12 +71,12 @@ data_struct = {
                     }
 }
 
-def fillDAG( jobsub, tag, date, paths, gcmp ):
-   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'], gcmp )
-   createCmpConfigs( tag, date, paths['minervarep'], gcmp )
+def fillDAG( jobsub, tag, date, paths ):
+   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'] )
+   createCmpConfigs( tag, date, paths['minervarep'] )
    fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['minerva'], paths['minervarep'] )
 
-def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, gcmp ):
+def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
 
    if eventFilesExist(out):
       msg.warning ("MINERvA test ghep files found in " + out + " ... " + msg.BOLD + "skipping minerva:fillDAG_GHEP\n", 1)
@@ -97,7 +97,7 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, gcmp ):
      else:
         opt = options + " -n 10000 --event-generator-list COH "
      cmd = "gevgen " + opt + " -p " + data_struct[key]['projectile'] + " -e " + data_struct[key]['energy'] + \
-           " -f " + gcmp + "/" + data_struct[key]['flux'] + " -o gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
+           " -f " + data_struct[key]['flux'] + " -o gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
      logfile = "gevgen_" + key + ".log"
      # NOTE: FIXME - CHECK WHAT IT DOES !!!
      jobsub.addJob ( xsec_a_path + "/" + inputxsec, out, logfile, cmd )
@@ -105,7 +105,7 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, gcmp ):
    # done
    jobsub.add ("</parallel>")
 
-def createCmpConfigs( tag, date, reportdir, gcmp ):
+def createCmpConfigs( tag, date, reportdir ):
 
    # start GLOBAL CMP CONFIG
    gcfg = reportdir + "/global-minerva-cfg-" + tag + "_" + date + ".xml"
@@ -137,13 +137,13 @@ def createCmpConfigs( tag, date, reportdir, gcmp ):
 
       for i in range( len( data_struct[key]['datafiles'] ) ):
          print >>gxml, '\t\t\t\t<spec>'
-         print >>gxml, '\t\t\t\t\t<path2data> ' + gcmp + '/data/measurements/vA/minerva/' + data_struct[key]['datafiles'][i] + ' </path2data>'
+         print >>gxml, '\t\t\t\t\t<path2data> data/measurements/vA/minerva/' + data_struct[key]['datafiles'][i] + ' </path2data>'
          print >>gxml, '\t\t\t\t\t<dataclass> MINERvAExData </dataclass>'
          print >>gxml, '\t\t\t\t\t<predictionclass> ' + data_struct[key]['mcpredictions'][i] + ' </predictionclass>'
          print >>gxml, '\t\t\t\t</spec>'
       
       # ---> print >>gxml, '\t\t\t\t<genie> ' + xmlfile + ' </genie>'
-      print >>gxml, '\t\t\t\t<genie> input/' + gsimfile + ' </genie>'
+      print >>gxml, '\t\t\t\t<genie> input' + gsimfile + ' </genie>'
       print >>gxml, '\t\t\t</comparison>'
    
    # now finish up and close global config

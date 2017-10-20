@@ -24,7 +24,7 @@ flux = "1/x"
 releaselabel = "trunk:default:numu_freenuc"
 
 comparisons = { 
-# numu CC inclusive
+# numu CC inclusive 
    'cmp_numuCC_all' :    { 'datafiles' : ['numuCC_all.xml' ],
 		           'dataclass' : 'INXSDataSet',
 		           'mcpredictions' : ['INXSPredIncl'],
@@ -70,7 +70,7 @@ comparisons = {
 			     'mcpredictions' : ['INXSPredIncl'],
 			     'outprefix' : 'c01d06_'
 			   },
-   'cmp_numuCC_BNL_7FT,0' :   { 'datafiles' : ['numuCC_BNL_7FT,0.xml'],
+   'cmp_numuCC_BNL_7FT,0' :   { 'datafiles' : ['numuCC_BNL_7FT,0.xml'], 
                                 'dataclass' : 'INXSDataSet',
 			        'mcpredictions' : ['INXSPredIncl'],
 			        'outprefix' : 'c01d07_'
@@ -120,7 +120,7 @@ comparisons = {
 			            'mcpredictions' : ['INXSPredIncl'],
 			            'outprefix' : 'c01d16_'
 			          },
-   'cmp_numuCC_Gargamelle,12' :   { 'datafiles' : ['numuCC_Gargamelle,12.xml'],
+   'cmp_numuCC_Gargamelle,12' :   { 'datafiles' : ['numuCC_Gargamelle,12.xml'], 
                                     'dataclass' : 'INXSDataSet',
 			            'mcpredictions' : ['INXSPredIncl'],
 			            'outprefix' : 'c01d17_'
@@ -150,13 +150,13 @@ comparisons = {
 			      'mcpredictions' : ['INXSPredIncl'],
 			      'outprefix' : 'c01d22_'
 			    },
-   'cmp_numuCC_SciBooNE,0' :   { 'datafiles' : ['numuCC_SciBooNE,0.xml'],
+   'cmp_numuCC_SciBooNE,0' :   { 'datafiles' : ['numuCC_SciBooNE,0.xml'], 
                                  'dataclass' : 'INXSDataSet',
 			         'mcpredictions' : ['INXSPredIncl'],
 			         'outprefix' : 'c01d23_'
 			       },
-# numu CC QE
-   'cmp_numuCCQE_all' :   { 'datafiles' : ['numuCCQE_all.xml'],
+# numu CC QE 
+   'cmp_numuCCQE_all' :   { 'datafiles' : ['numuCCQE_all.xml'], 
                                  'dataclass' : 'INXSDataSet',
 			         'mcpredictions' : ['INXSPredQE'],
 			         'outprefix' : 'c03c01_'
@@ -202,7 +202,7 @@ comparisons = {
 			          'mcpredictions' : ['INXSPredQE'],
 			          'outprefix' : 'c03d07_'
 			        },
-   'cmp_numuCCQE_SERP_A1,1' :   { 'datafiles' : ['numuCCQE_SERP_A1,1.xml'],
+   'cmp_numuCCQE_SERP_A1,1' :   { 'datafiles' : ['numuCCQE_SERP_A1,1.xml'], 
                                   'dataclass' : 'INXSDataSet',
 			          'mcpredictions' : ['INXSPredQE'],
 			          'outprefix' : 'c03d08_'
@@ -227,13 +227,13 @@ comparisons = {
 			            'mcpredictions' : ['INXSPredQE'],
 			            'outprefix' : 'c03d12_'
 			          },
-   'cmp_numuCCQE_LSND,0' :   { 'datafiles' : ['numuCCQE_LSND,0.xml'],
+   'cmp_numuCCQE_LSND,0' :   { 'datafiles' : ['numuCCQE_LSND,0.xml'], 
                                'dataclass' : 'INXSDataSet',
 			       'mcpredictions' : ['INXSPredQE'],
 			       'outprefix' : 'c03d10_'
 			     },
-# numu CC 1pi
-   'cmp_numuCCppi+_all' :   { 'datafiles' : ['numuCCppi+_all.xml'],
+# numu CC 1pi 
+   'cmp_numuCCppi+_all' :   { 'datafiles' : ['numuCCppi+_all.xml'], 
                               'dataclass' : 'INXSDataSet',
 			      'mcpredictions' : ['INXSPredExclPion'],
 			      'outprefix' : 'c05c01_'
@@ -278,7 +278,7 @@ comparisons = {
 			              'mcpredictions' : ['INXSPredExclPion'],
 			              'outprefix' : 'c05d08_'
 			            },
-   'cmp_numuCCppi+_Gargamelle,4' :   { 'datafiles' : ['numuCCppi+_Gargamelle,4.xml'],
+   'cmp_numuCCppi+_Gargamelle,4' :   { 'datafiles' : ['numuCCppi+_Gargamelle,4.xml'], 
                                        'dataclass' : 'INXSDataSet',
 			               'mcpredictions' : ['INXSPredExclPion'],
 			               'outprefix' : 'c05d09_'
@@ -288,12 +288,12 @@ comparisons = {
 			         'mcpredictions' : ['INXSPredExclPion'],
 			         'outprefix' : 'c05d10_'
 			       },
-   'cmp_numuCCppi+_SKAT,5' :   { 'datafiles' : ['numuCCppi+_SKAT,5.xml'],
+   'cmp_numuCCppi+_SKAT,5' :   { 'datafiles' : ['numuCCppi+_SKAT,5.xml'], 
                                  'dataclass' : 'INXSDataSet',
 			         'mcpredictions' : ['INXSPredExclPion'],
 			         'outprefix' : 'c05d11_'
 			       },
-   'cmp_numuCCnpi+_all' :   { 'datafiles' : ['numuCCnpi+_all.xml'],
+   'cmp_numuCCnpi+_all' :   { 'datafiles' : ['numuCCnpi+_all.xml'], 
                               'dataclass' : 'INXSDataSet',
 			      'mcpredictions' : ['INXSPredExclPion'],
 			      'outprefix' : 'c06c01_'
@@ -313,12 +313,12 @@ comparisons = {
 			            'mcpredictions' : ['INXSPredExclPion'],
 			            'outprefix' : 'c06d03_'
 			          },
-   'cmp_numuCCnpi+_SKAT,7' :   { 'datafiles' : ['numuCCnpi+_SKAT,7.xml'],
+   'cmp_numuCCnpi+_SKAT,7' :   { 'datafiles' : ['numuCCnpi+_SKAT,7.xml'], 
                                  'dataclass' : 'INXSDataSet',
 			         'mcpredictions' : ['INXSPredExclPion'],
 			         'outprefix' : 'c06d04_'
 			       },
-   'cmp_numuCCppi0_all' :   { 'datafiles' : ['numuCCppi0_all.xml'],
+   'cmp_numuCCppi0_all' :   { 'datafiles' : ['numuCCppi0_all.xml'], 
                               'dataclass' : 'INXSDataSet',
 			      'mcpredictions' : ['INXSPredExclPion'],
 			      'outprefix' : 'c07c01_'
@@ -338,51 +338,87 @@ comparisons = {
 			            'mcpredictions' : ['INXSPredExclPion'],
 			            'outprefix' : 'c07d03_'
 			          },
-   'cmp_numuCCppi0_SKAT,6' :   { 'datafiles' : ['numuCCppi0_SKAT,6.xml'],
+   'cmp_numuCCppi0_SKAT,6' :   { 'datafiles' : ['numuCCppi0_SKAT,6.xml'], 
                                  'dataclass' : 'INXSDataSet',
 			         'mcpredictions' : ['INXSPredExclPion'],
 			         'outprefix' : 'c07d04_'
 			       },
 # numu CC 2pi
-   'cmp_numuCCn2pi+_all' :   { 'datafiles' : ['numuCCn2pi+_all.xml'],
+   'cmp_numuCCn2pi+_all' :   { 'datafiles' : ['numuCCn2pi+_all.xml'], 
                                'dataclass' : 'INXSDataSet',
 			       'mcpredictions' : ['INXSPredExclPion'],
 			       'outprefix' : 'c08c01_'
 			     },
-   'cmp_numuCCn2pi+_ANL_12FT,13' :   { 'datafiles' : ['numuCCn2pi+_ANL_12FT,13.xml'],
+   'cmp_numuCCn2pi+_ANL_12FT,13' :   { 'datafiles' : ['numuCCn2pi+_ANL_12FT,13.xml'], 
                                        'dataclass' : 'INXSDataSet',
 			               'mcpredictions' : ['INXSPredExclPion'],
 			               'outprefix' : 'c08d01_'
 			             },
-   'cmp_numuCCppi+pi0_all' :   { 'datafiles' : ['numuCCppi+pi0_all.xml'],
+   'cmp_numuCCppi+pi0_all' :   { 'datafiles' : ['numuCCppi+pi0_all.xml'], 
                                   'dataclass' : 'INXSDataSet',
 			          'mcpredictions' : ['INXSPredExclPion'],
 			          'outprefix' : 'c09c01_'
 			        },
-   'cmp_numuCCppi+pi0_ANL_12FT,12' :   { 'datafiles' : ['numuCCppi+pi0_ANL_12FT,12.xml'],
+   'cmp_numuCCppi+pi0_ANL_12FT,12' :   { 'datafiles' : ['numuCCppi+pi0_ANL_12FT,12.xml'], 
                                          'dataclass' : 'INXSDataSet',
 			                 'mcpredictions' : ['INXSPredExclPion'],
 			                 'outprefix' : 'c09d01_'
 			               },
-   'cmp_numuCCppi+pi-_all' :   { 'datafiles' : ['numuCCppi+pi-_all.xml'],
+   'cmp_numuCCppi+pi-_all' :   { 'datafiles' : ['numuCCppi+pi-_all.xml'], 
                                   'dataclass' : 'INXSDataSet',
 			          'mcpredictions' : ['INXSPredExclPion'],
 			          'outprefix' : 'c10c01_'
 			        },
-   'cmp_numuCCppi+pi-_ANL_12FT,11' :   { 'datafiles' : ['numuCCppi+pi-_ANL_12FT,11.xml'],
+   'cmp_numuCCppi+pi-_ANL_12FT,11' :   { 'datafiles' : ['numuCCppi+pi-_ANL_12FT,11.xml'], 
                                          'dataclass' : 'INXSDataSet',
 			                 'mcpredictions' : ['INXSPredExclPion'],
 			                 'outprefix' : 'c10d01_'
 			               },
-   'cmp_numuCCppi+pi-_BNL_7FT,8' :   { 'datafiles' : ['numuCCppi+pi-_BNL_7FT,8.xml'],
+   'cmp_numuCCppi+pi-_BNL_7FT,8' :   { 'datafiles' : ['numuCCppi+pi-_BNL_7FT,8.xml'],  
                                        'dataclass' : 'INXSDataSet',
 			               'mcpredictions' : ['INXSPredExclPion'],
 			               'outprefix' : 'c10d02_'
 			             },
 
 # numu coherent pi
-# numubar CC inclusive
-   'cmp_numubarCC_all' : { 'datafiles' : ['numubarCC_all.xml' ],
+   'cmp_numuNCcohpi0_Ne20' :   { 'datafiles' : ['numuNCcohpi0_Ne20.xml'],  
+                                       'dataclass' : 'INXSDataSet',
+			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+			               'outprefix' : 'c11c01_'
+			             },
+   'cmp_numuNCcohpi0_Al27' :   { 'datafiles' : ['numuNCcohpi0_Al27.xml'],  
+                                       'dataclass' : 'INXSDataSet',
+			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+			               'outprefix' : 'c11c02_'
+			             },
+   'cmp_numuNCcohpi0_Si30' :   { 'datafiles' : ['numuNCcohpi0_Si30.xml'],  
+                                       'dataclass' : 'INXSDataSet',
+			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+			               'outprefix' : 'c11c03_'
+			             },
+   'cmp_numuCCcohpi+_Ne20' :   { 'datafiles' : ['numuCCcohpi+_Ne20.xml'],  
+                                       'dataclass' : 'INXSDataSet',
+			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+			               'outprefix' : 'c12c01_'
+			             },
+   'cmp_numuCCcohpi+_Si30' :   { 'datafiles' : ['numuCCcohpi+_Si30.xml'],  
+                                       'dataclass' : 'INXSDataSet',
+			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+			               'outprefix' : 'c12c02_'
+			             },
+# numubar coherent pi
+   'cmp_numubarCCcohpi-_Ne20' :   { 'datafiles' : ['numubarCCcohpi-_Ne20.xml'],  
+                                       'dataclass' : 'INXSDataSet',
+			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+			               'outprefix' : 'c13c01_'
+			             },
+   'cmp_numubarCCcohpi-_Si30' :   { 'datafiles' : ['numubarCCcohpi-_Si30.xml'],  
+                                       'dataclass' : 'INXSDataSet',
+			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+			               'outprefix' : 'c13c02_'
+			             },
+# numubar CC inclusive 
+   'cmp_numubarCC_all' : { 'datafiles' : ['numubarCC_all.xml' ], 
 		           'dataclass' : 'INXSDataSet',
 		           'mcpredictions' : ['INXSPredIncl'],
 			   'outprefix' : 'c02c01_'
@@ -427,7 +463,7 @@ comparisons = {
 			        'mcpredictions' : ['INXSPredIncl'],
 			        'outprefix' : 'c02d06_'
 			      },
-   'cmp_numubarCC_CHARM,1' :   { 'datafiles' : ['numubarCC_CHARM,1.xml'],
+   'cmp_numubarCC_CHARM,1' :   { 'datafiles' : ['numubarCC_CHARM,1.xml'], 
                                  'dataclass' : 'INXSDataSet',
 			         'mcpredictions' : ['INXSPredIncl'],
 			         'outprefix' : 'c02d07_'
@@ -477,13 +513,13 @@ comparisons = {
 			             'mcpredictions' : ['INXSPredIncl'],
 			             'outprefix' : 'c02d16_'
 			           },
-   'cmp_numubarCC_MINOS,1' :   { 'datafiles' : ['numubarCC_MINOS,1.xml'],
+   'cmp_numubarCC_MINOS,1' :   { 'datafiles' : ['numubarCC_MINOS,1.xml'], 
                                  'dataclass' : 'INXSDataSet',
 			         'mcpredictions' : ['INXSPredIncl'],
 			         'outprefix' : 'c02d14_'
 			       },
-# numubar CC QE
-   'cmp_numubarCCQE_all' :   { 'datafiles' : ['numubarCCQE_all.xml'],
+# numubar CC QE 
+   'cmp_numubarCCQE_all' :   { 'datafiles' : ['numubarCCQE_all.xml'], 
                                'dataclass' : 'INXSDataSet',
 			       'mcpredictions' : ['INXSPredQE'],
 			       'outprefix' : 'c04c01_'
@@ -518,24 +554,39 @@ comparisons = {
 			           'mcpredictions' : ['INXSPredQE'],
 			           'outprefix' : 'c04d06_'
 			         },
-   'cmp_numubarCCQE_NOMAD,1' :   { 'datafiles' : ['numubarCCQE_NOMAD,1.xml'],
+   'cmp_numubarCCQE_NOMAD,1' :   { 'datafiles' : ['numubarCCQE_NOMAD,1.xml'], 
                                    'dataclass' : 'INXSDataSet',
 			           'mcpredictions' : ['INXSPredQE'],
 			           'outprefix' : 'c04d07_'
-			         }
+			         },
 # Cross-section ratios
 # numubar CC inclusive / numu CC inclusive
+   'cmp_numubarCC_over_numuCC_MINOS,2' :   { 'datafiles' : ['numubarCC_over_numuCC_MINOS,2.xml'], 
+                                   'dataclass' : 'INXSDataSet',
+			           'mcpredictions' : ['INXSPredNull'],
+			           'outprefix' : 'c14d01_'
+			         },
 # numu CC pi0 / numu CCQE
+   'cmp_numuCCpi0_over_numuCCQE_K2K,0' :   { 'datafiles' : ['numuCCpi0_over_numuCCQE_K2K,0.xml'], 
+                                   'dataclass' : 'INXSDataSet',
+			           'mcpredictions' : ['INXSPredNull'],
+			           'outprefix' : 'c15d01_'
+			         },
 # Dileptons
+   'cmp_numuCC_dilepton_ratio_worldavg' : { 'datafiles' : ['numuCC_dilepton_ratio_worldavg.xml'],
+                                            'dataclass' : 'INXSDataSet',
+			                    'mcpredictions' : ['INXSPredNull'],
+			                    'outprefix' : 'c16c01_'
+                                          }
 }
 
 
-def fillDAG (jobsub, tag, date, paths, gcmp ):
+def fillDAG (jobsub, tag, date, paths ):
   fillDAG_GHEP (jobsub, tag, paths['xsec_A'], paths['xsecval'])
   fillDAG_GST (jobsub, paths['xsecval'])
   createFileList (tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'])
-  createCmpConfig (tag, date, paths['xseclog'], gcmp ) 
-  fillDAG_cmp (jobsub, tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'], paths['xsecsng'])
+  createCmpConfig (tag, date, paths['xseclog'] ) 
+  fillDAG_cmp (jobsub, tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'] ) 
 
 def fillDAG_GHEP (jobsub, tag, xsec_a_path, out):
   # check if job is done already
@@ -592,10 +643,9 @@ def createFileList (tag, date, xsec_a_path, outEvent, outRep):
   print >>xml, '</genie_simulation_outputs>'
   xml.close()
 
-def createCmpConfig( tag, date, reportdir, gcmp ):
+def createCmpConfig( tag, date, reportdir ):
 
    # start GLOBAL CMP CONFIG
-   # gcfg = reportdir + "/global-minerva-cfg-" + tag + "_" + date + ".xml"
    for key in comparisons.iterkeys():
       gcfg = reportdir + "/" + key + "-" + tag + "-" + date + ".xml"
       try: os.remove(gcfg)
@@ -610,7 +660,7 @@ def createCmpConfig( tag, date, reportdir, gcmp ):
 
       for i in range( len( comparisons[key]['datafiles'] ) ):
          print >>gxml, '\t\t\t\t<spec>'
-         print >>gxml, '\t\t\t\t\t<path2data> ' + gcmp + '/data/measurements/vA/intg_xsec/' + comparisons[key]['datafiles'][i] + ' </path2data>'
+         print >>gxml, '\t\t\t\t\t<path2data> data/measurements/vA/intg_xsec/' + comparisons[key]['datafiles'][i] + ' </path2data>'
          print >>gxml, '\t\t\t\t\t<dataclass> ' + comparisons[key]['dataclass'] + ' </dataclass>'
          print >>gxml, '\t\t\t\t\t<predictionclass> ' + comparisons[key]['mcpredictions'][i] + ' </predictionclass>'
          print >>gxml, '\t\t\t\t</spec>'
@@ -624,9 +674,10 @@ def createCmpConfig( tag, date, reportdir, gcmp ):
       print >>gxml, '</config>'
       gxml.close()
       
-def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, outRepSng):
+#   def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, outRepSng):
+def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep):
   # check if job is done already
-  if isDoneData (tag, date, outRep, outRepSng):
+  if isDoneData (tag, date, outRep):
     msg.warning ("xsec validation plots found in " + outRep + " ... " + msg.BOLD + "skipping xsecval:fillDAG_data\n", 1)
     return
   # not done, add jobs to dag
@@ -634,23 +685,11 @@ def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, outRepSng):
   inputs = outRep + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + outEvents + "/*.ghep.root"
   # in parallel mode
   jobsub.add ("<parallel>")
-  # one job for all comparisons without errors - NOTE(JVY): do NOT know what it is !!!
-  # --> inFile  = "file_list-" + tag + "-" + date + ".xml"
-  # --> outFile = "genie_" + tag + "-" + date + "-world_nu_xsec_data_comp-all-withref"
-  # --> cmd = "gvld_nu_xsec -g input/" + inFile + " -o " + outFile
-  # add the command to dag
-  # --> old one --> inputs = outRep + "/" + inFile + " " + xsec_a_path + "/xsec-vA-" + tag + ".root " + outEvents + "/*.ghep.root"
-  # --> logFile = "gvld_nu_xsec_all.log"
-  # --> jobsub.addJob (inputs, outRep, logFile, cmd)
-  # job per comparison with error
   for comp in comparisons:
-    # --> old --> outFile = "genie_" + tag + "-" + date + "-world_nu_xsec_data_comp-" + comp
-    # --> old --> cmd = "gvld_nu_xsec -e -g input/" + inFile + " -o " + outFile + " -c " + comp
     inFile = comp + "-" + tag + "-" + date + ".xml"    
     outFile = "genie_" + tag + "_" + comparisons[comp]['outprefix'] + comp 
     cmd = "gvld_general_comparison --global-config input/" + inFile + " -o " + outFile 
     logFile = "gvld_nu_xsec_" + comp + ".log"
-    # --> old --> jobsub.addJob (inputs, outRepSng, logFile, cmd)
     jobsub.addJob (inputs, outRep, logFile, cmd)
   # done
   jobsub.add ("</parallel>")
@@ -667,9 +706,7 @@ def isDoneGST (path):
     if "gntp." + key + ".gst.root" not in os.listdir (path): return False
   return True
   
-def isDoneData (tag, date, path, path2):
+def isDoneData (tag, date, path):
   # check if given path contains all plots
   if "genie_" + tag + "-" + date + "-world_nu_xsec_data_comp-all-withref.ps" not in os.listdir (path): return False
-  for comp in comparisons:
-    if "genie_" + tag + "-" + date + "-world_nu_xsec_data_comp-" + comp + ".ps" not in os.listdir (path2): return False
   return True
