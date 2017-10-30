@@ -379,44 +379,46 @@ comparisons = {
 			               'mcpredictions' : ['INXSPredExclPion'],
 			               'outprefix' : 'c10d02_'
 			             },
-
+#
+# PROBLEMATIC - all bail out with the "not in the new framework" error message
+#
 # numu coherent pi
-   'cmp_numuNCcohpi0_Ne20' :   { 'datafiles' : ['numuNCcohpi0_Ne20.xml'],  
-                                       'dataclass' : 'INXSDataSet',
-			               'mcpredictions' : ['INXSPredPrecompCohPion'],
-			               'outprefix' : 'c11c01_'
-			             },
-   'cmp_numuNCcohpi0_Al27' :   { 'datafiles' : ['numuNCcohpi0_Al27.xml'],  
-                                       'dataclass' : 'INXSDataSet',
-			               'mcpredictions' : ['INXSPredPrecompCohPion'],
-			               'outprefix' : 'c11c02_'
-			             },
-   'cmp_numuNCcohpi0_Si30' :   { 'datafiles' : ['numuNCcohpi0_Si30.xml'],  
-                                       'dataclass' : 'INXSDataSet',
-			               'mcpredictions' : ['INXSPredPrecompCohPion'],
-			               'outprefix' : 'c11c03_'
-			             },
-   'cmp_numuCCcohpi+_Ne20' :   { 'datafiles' : ['numuCCcohpi+_Ne20.xml'],  
-                                       'dataclass' : 'INXSDataSet',
-			               'mcpredictions' : ['INXSPredPrecompCohPion'],
-			               'outprefix' : 'c12c01_'
-			             },
-   'cmp_numuCCcohpi+_Si30' :   { 'datafiles' : ['numuCCcohpi+_Si30.xml'],  
-                                       'dataclass' : 'INXSDataSet',
-			               'mcpredictions' : ['INXSPredPrecompCohPion'],
-			               'outprefix' : 'c12c02_'
-			             },
+#   'cmp_numuNCcohpi0_Ne20' :   { 'datafiles' : ['numuNCcohpi0_Ne20.xml'],  # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+#			               'outprefix' : 'c11c01_'
+#			             },
+#   'cmp_numuNCcohpi0_Al27' :   { 'datafiles' : ['numuNCcohpi0_Al27.xml'],  # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+#			               'outprefix' : 'c11c02_'
+#			             },
+#   'cmp_numuNCcohpi0_Si30' :   { 'datafiles' : ['numuNCcohpi0_Si30.xml'],  # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+#			               'outprefix' : 'c11c03_'
+#			             },
+#   'cmp_numuCCcohpi+_Ne20' :   { 'datafiles' : ['numuCCcohpi+_Ne20.xml'],  # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+#			               'outprefix' : 'c12c01_'
+#			             },
+#   'cmp_numuCCcohpi+_Si30' :   { 'datafiles' : ['numuCCcohpi+_Si30.xml'],  # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+#			               'outprefix' : 'c12c02_'
+#			             },
 # numubar coherent pi
-   'cmp_numubarCCcohpi-_Ne20' :   { 'datafiles' : ['numubarCCcohpi-_Ne20.xml'],  
-                                       'dataclass' : 'INXSDataSet',
-			               'mcpredictions' : ['INXSPredPrecompCohPion'],
-			               'outprefix' : 'c13c01_'
-			             },
-   'cmp_numubarCCcohpi-_Si30' :   { 'datafiles' : ['numubarCCcohpi-_Si30.xml'],  
-                                       'dataclass' : 'INXSDataSet',
-			               'mcpredictions' : ['INXSPredPrecompCohPion'],
-			               'outprefix' : 'c13c02_'
-			             },
+#   'cmp_numubarCCcohpi-_Ne20' :   { 'datafiles' : ['numubarCCcohpi-_Ne20.xml'],  # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+#			               'outprefix' : 'c13c01_'
+#			             },
+#   'cmp_numubarCCcohpi-_Si30' :   { 'datafiles' : ['numubarCCcohpi-_Si30.xml'],  # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredPrecompCohPion'],
+#			               'outprefix' : 'c13c02_'
+#			             },
 # numubar CC inclusive 
    'cmp_numubarCC_all' : { 'datafiles' : ['numubarCC_all.xml' ], 
 		           'dataclass' : 'INXSDataSet',
@@ -558,26 +560,69 @@ comparisons = {
                                    'dataclass' : 'INXSDataSet',
 			           'mcpredictions' : ['INXSPredQE'],
 			           'outprefix' : 'c04d07_'
-			         },
+			         } # *** NOTE *** RESTORE the comma when the time comes to restore problematic ones !
+#
+# PROBLEMATIC - all bail out with the "not in the new framework" error message
+#
 # Cross-section ratios
 # numubar CC inclusive / numu CC inclusive
-   'cmp_numubarCC_over_numuCC_MINOS,2' :   { 'datafiles' : ['numubarCC_over_numuCC_MINOS,2.xml'], 
-                                   'dataclass' : 'INXSDataSet',
-			           'mcpredictions' : ['INXSPredNull'],
-			           'outprefix' : 'c14d01_'
-			         },
+#   'cmp_numubarCC_over_numuCC_MINOS,2' :   { 'datafiles' : ['numubarCC_over_numuCC_MINOS,2.xml'], # problematic - not in the new fwk
+#                                   'dataclass' : 'INXSDataSet',
+#			           'mcpredictions' : ['INXSPredNull'],
+#			           'outprefix' : 'c14d01_'
+#			         },
 # numu CC pi0 / numu CCQE
-   'cmp_numuCCpi0_over_numuCCQE_K2K,0' :   { 'datafiles' : ['numuCCpi0_over_numuCCQE_K2K,0.xml'], 
-                                   'dataclass' : 'INXSDataSet',
-			           'mcpredictions' : ['INXSPredNull'],
-			           'outprefix' : 'c15d01_'
-			         },
+#   'cmp_numuCCpi0_over_numuCCQE_K2K,0' :   { 'datafiles' : ['numuCCpi0_over_numuCCQE_K2K,0.xml'], # problematic - not in the new fwk
+#                                   'dataclass' : 'INXSDataSet',
+#			           'mcpredictions' : ['INXSPredNull'],
+#			           'outprefix' : 'c15d01_'
+#			         },
 # Dileptons
-   'cmp_numuCC_dilepton_ratio_worldavg' : { 'datafiles' : ['numuCC_dilepton_ratio_worldavg.xml'],
-                                            'dataclass' : 'INXSDataSet',
-			                    'mcpredictions' : ['INXSPredNull'],
-			                    'outprefix' : 'c16c01_'
-                                          }
+#   'cmp_numuCC_dilepton_ratio_worldavg' : { 'datafiles' : ['numuCC_dilepton_ratio_worldavg.xml'], # problematic - not in the new fwk
+#                                            'dataclass' : 'INXSDataSet',
+#			                    'mcpredictions' : ['INXSPredNull'],
+#			                    'outprefix' : 'c16c01_'
+#                                          },
+#   'cmp_numubarCC_dilepton_ratio_worldavg' : { 'datafiles' : ['numubarCC_dilepton_ratio_worldavg.xml'], # problematic - not in the new fwk
+#                                               'dataclass' : 'INXSDataSet',
+#			                       'mcpredictions' : ['INXSPredNull'],
+#			                       'outprefix' : 'c16c02_'
+#                                             },
+#   'cmp_numuCC_charm_ratio_worldavg' : { 'datafiles' : ['numuCC_charm_ratio_worldavg.xml'], # problematic - not in the new fwk
+#                                         'dataclass' : 'INXSDataSet',
+#			                 'mcpredictions' : ['INXSPredNull'],
+#			                 'outprefix' : 'c16c03_'
+#                                       },
+#   'cmp_numuCC_dilepton_cdhs' : { 'datafiles' : ['numuCC_dilepton_cdhs.xml'], # problematic - not in the new fwk
+#                                  'dataclass' : 'INXSDataSet',
+#			          'mcpredictions' : ['INXSPredNull'],
+#			          'outprefix' : 'c16d01_'
+#                                },
+#   'cmp_numuCC_dilepton_nomad' : { 'datafiles' : ['numuCC_dilepton_nomad.xml'], # problematic - not in the new fwk
+#                                   'dataclass' : 'INXSDataSet',
+#			           'mcpredictions' : ['INXSPredNull'],
+#			           'outprefix' : 'c16d02_'
+#                                 },
+#   'cmp_numuCC_dilepton_e744_e770' : { 'datafiles' : ['numuCC_dilepton_e744_e770.xml'], # problematic - not in the new fwk
+#                                       'dataclass' : 'INXSDataSet',
+#			               'mcpredictions' : ['INXSPredNull'],
+#			               'outprefix' : 'c16d03_'
+#                                     },
+#   'cmp_numuCC_dilepton_e744' : { 'datafiles' : ['numuCC_dilepton_e744.xml'], # problematic - not in the new fwk
+#                                  'dataclass' : 'INXSDataSet',
+#			          'mcpredictions' : ['INXSPredNull'],
+#			          'outprefix' : 'c16d04_'
+#                                },
+#   'cmp_numuCC_dilepton_fnal15ft' : { 'datafiles' : ['numuCC_dilepton_fnal15ft.xml'], # problematic - not in the new fwk
+#                                      'dataclass' : 'INXSDataSet',
+#			              'mcpredictions' : ['INXSPredNull'],
+#			              'outprefix' : 'c16d05_'
+#                                    },
+#   'cmp_numuCC_dilepton_gargamelle' : { 'datafiles' : ['numuCC_dilepton_gargamelle.xml'], # problematic - not in the new fwk
+#                                        'dataclass' : 'INXSDataSet',
+#			                'mcpredictions' : ['INXSPredNull'],
+#			                'outprefix' : 'c16d06_'
+#                                      }
 }
 
 
