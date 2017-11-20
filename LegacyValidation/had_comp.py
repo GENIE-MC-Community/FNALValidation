@@ -34,7 +34,7 @@ def createFileList (args):
     xsecPath = args.topdir + "/" + args.tags[i] + "/" + args.dates[i] + "/xsec/nuN"
     for key in sorted(nuPDG.iterkeys()):
       print >>xml, '\t\t<evt_file format="ghep"> ' + ghepPath + '/gntp.' + key + '.ghep.root </evt_file>'
-    print >>xml, '\t\t<xsec_file> ' + xsecPath + '/xsec-vN-' + args.tags[i] + '.root </xsec_file>'
+    # ---> print >>xml, '\t\t<xsec_file> ' + xsecPath + '/xsec-vN-' + args.tags[i] + '.root </xsec_file>'
     print >>xml, '\t</model>'
 
   print >>xml, '</genie_simulation_outputs>'
