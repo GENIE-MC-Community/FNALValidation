@@ -2,6 +2,12 @@
 
 # GENIE Legacy Validation Comparisons based on src/scripts/production/batch
 
+# example usage:
+#  ./compare.py --builds /grid/fermiapp/genie/builds_update \
+#               --genie_tags 'R-2_12_8 R-2_12_6' --genie_dates '2017-10-27 2017-09-11' \
+#               --top_dir /pnfs/genie/persistent/users/yarba_j/GENIE_LegacyValidation  \
+#               --comp_path /grid/fermiapp/genie/legacyValidation_update_1/runCompare.sh
+
 import parser_comp, msg, xsec_comp, had_comp
 import os, sys, datetime, subprocess
 

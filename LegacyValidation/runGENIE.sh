@@ -43,9 +43,16 @@ source /grid/fermiapp/products/genie/bootstrap_genie_ups.sh
 
 # switch to the optimized ones
 #
-setup root v5_34_25a -q e7:nu:prof
-setup lhapdf v5_9_1b -q e7:prof
-setup log4cpp v1_1_1b -q e7:prof
+#setup root v5_34_25a -q e7:nu:prof
+#setup lhapdf v5_9_1b -q e7:prof
+#setup log4cpp v1_1_1b -q e7:prof
+
+# switch to root6 for the gsl v2.3 bundled with it
+# also, use e14 qualifier(s)
+#
+setup root v6_10_04d -q e14:nu:prof
+setup lhapdf v5_9_1h -q e14:prof
+setup log4cpp v1_1_2 -q e14:prof
 
 export LD_LIBRARY_PATH=$GENIE/lib:$GENIE_COMPARISONS/lib:$LD_LIBRARY_PATH
 export PATH=$GENIE/bin:$GENIE_COMPARISONS/bin:$PATH
