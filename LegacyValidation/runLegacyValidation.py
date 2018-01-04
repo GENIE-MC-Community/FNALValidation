@@ -3,10 +3,11 @@
 # GENIE Legacy Validation based on src/scripts/production/batch
 
 # example format:
-# ./runLegacyValidation.py --genie_tag R-2_12_6  \ 
+# ./runLegacyValidation.py --genie_tag R-2_12_8  \ 
 #                          --run_path /grid/fermiapp/genie/legacyValidation_update_1/runGENIE.sh \
 #                          --builds /grid/fermiapp/genie/builds_update \ 
-#                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation
+#                          --output /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation \
+#  optional:               [ --regre 'R-2_12_6/2017-09-11 [reg2, reg3,...]' --regre_dir /pnfs/genie/persistent/users/yarba_j/GENIE_LegacyValidation ]
 
 from jobsub import Jobsub
 # various services
@@ -83,6 +84,12 @@ if __name__ == "__main__":
   args.buildNameCmp = jenkins.getBuild ("comparisons",args.cmptag, args.build_date, args.builds)
   # preapre folder structure for output
   args.paths = preparePaths (args.output + "/" + args.tag + "/" + args.build_date)
+  # regresion tests (optional)
+  if not (args.regretags is None):
+     args.regretags = args.regretags.split()
+     # also need to check/assert that args.regredir is not None !!! otherwise throw !!!
+     # assert ( not (args.regredir is None) ), "Path to regression dir is required for regression tests"
+     if args.regredir is None: raise AssertionError
   # initialize jobsub
   jobsub = Jobsub (args)
   # fill dag files with jobs
@@ -93,15 +100,11 @@ if __name__ == "__main__":
   nua.fillDAG (jobsub, args.tag, args.paths)
   # standard mctest sanity (events scan)
   standard.fillDAG (jobsub, args.tag, args.paths)
-  # repeatability test
-# --> NO TRACK OF ANY SUCH UTILITY -->  reptest.fillDAG (jobsub, args.tag, args.paths)
   # xsec validation
-# --> OLD -->   xsecval.fillDAG (jobsub, args.tag, args.build_date, args.paths)
-# --> INTERMEDIATE -->  xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.builds+"/"+args.buildNameCmp )
-  xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths )
+  xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.regretags, args.regredir )
   # hadronization test
   hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths )
   # MINERvA test
-  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths )
+  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.regretags, args.regredir )
   # dag file done, submit jobs
   jobsub.submit()

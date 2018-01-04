@@ -71,10 +71,10 @@ data_struct = {
                     }
 }
 
-def fillDAG( jobsub, tag, date, paths ):
+def fillDAG( jobsub, tag, date, paths, regretags, regredir ):
    fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'] )
-   createCmpConfigs( tag, date, paths['minervarep'] )
-   fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['minerva'], paths['minervarep'] )
+   createCmpConfigs( tag, date, paths['minervarep'], regretags )
+   fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['minerva'], paths['minervarep'], regretags, regredir )
 
 def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
 
@@ -100,12 +100,12 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
            " -f " + data_struct[key]['flux'] + " -o gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
      logfile = "gevgen_" + key + ".log"
      # NOTE: FIXME - CHECK WHAT IT DOES !!!
-     jobsub.addJob ( xsec_a_path + "/" + inputxsec, out, logfile, cmd )
+     jobsub.addJob ( xsec_a_path + "/" + inputxsec, out, logfile, cmd, None )
    
    # done
    jobsub.add ("</parallel>")
 
-def createCmpConfigs( tag, date, reportdir ):
+def createCmpConfigs( tag, date, reportdir, regretags ):
 
    # start GLOBAL CMP CONFIG
    gcfg = reportdir + "/global-minerva-cfg-" + tag + "_" + date + ".xml"
@@ -130,6 +130,11 @@ def createCmpConfigs( tag, date, reportdir ):
       print >>xml, '\t<model name="GENIE_' + tag + ":default:" + data_struct[key]['releaselabel'] + '">'
       print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
       print >>xml, '\t</model>'
+      if not (regretags is None):
+         for rt in range(len(regretags)):
+	    print >>xml, '\t<model name="GENIE_' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
+	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+	    print >>xml, '\t</model>'
       print >>xml, '</genie_simulation_outputs>'
       xml.close()
 
@@ -151,7 +156,7 @@ def createCmpConfigs( tag, date, reportdir ):
    print >>gxml, '</config>'
    gxml.close()
    
-def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir ):
+def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, regretags, regredir ):
 
    # check if job is done already
    if resultsExist ( tag, date, reportdir ):
@@ -168,7 +173,12 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir ):
    # add the command to dag
    inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root"
    logfile = "gvld_general_comparison.log"
-   jobsub.addJob ( inputs, reportdir, logfile, cmd )
+   regre = None
+   if not (regretags is None):
+      regre = ""
+      for rt in range(len(regretags)):
+         regre = regre + regredir + "/" + regretags[rt] + "/events/minerva/*.ghep.root " 
+   jobsub.addJob ( inputs, reportdir, logfile, cmd, regre )
    # done
    jobsub.add ("</serial>")
 

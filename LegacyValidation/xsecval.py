@@ -626,12 +626,12 @@ comparisons = {
 }
 
 
-def fillDAG (jobsub, tag, date, paths ):
+def fillDAG (jobsub, tag, date, paths, regretags, regredir ):
   fillDAG_GHEP (jobsub, tag, paths['xsec_A'], paths['xsecval'])
   fillDAG_GST (jobsub, paths['xsecval'])
-  createFileList (tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'])
+  createFileList (tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'], regretags )
   createCmpConfig (tag, date, paths['xseclog'] ) 
-  fillDAG_cmp (jobsub, tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'] ) 
+  fillDAG_cmp (jobsub, tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'], regretags, regredir ) 
 
 def fillDAG_GHEP (jobsub, tag, xsec_a_path, out):
   # check if job is done already
@@ -650,7 +650,7 @@ def fillDAG_GHEP (jobsub, tag, xsec_a_path, out):
   for key in nuPDG.iterkeys():
     cmd = "gevgen " + options + " -p " + nuPDG[key] + " -t " + targetPDG[key] + " -r " + key
     logFile = "gevgen_" + key + ".log"
-    jobsub.addJob (xsec_a_path + "/" + inputFile, out, logFile, cmd)
+    jobsub.addJob (xsec_a_path + "/" + inputFile, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
 
@@ -668,11 +668,11 @@ def fillDAG_GST (jobsub, out):
     inputFile = "gntp." + key + ".ghep.root"
     logFile = "gntpc" + key + ".log"
     cmd = "gntpc -f gst -i input/" + inputFile
-    jobsub.addJob (out + "/" + inputFile, out, logFile, cmd)
+    jobsub.addJob (out + "/" + inputFile, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
 
-def createFileList (tag, date, xsec_a_path, outEvent, outRep):
+def createFileList (tag, date, xsec_a_path, outEvent, outRep, regretags):
   # create xml file with the file list in the format as src/scripts/production/misc/make_genie_sim_file_list.pl
   xmlFile = outRep + "/file_list-" + tag + "-" + date + ".xml"
   try: os.remove (xmlFile)
@@ -685,6 +685,14 @@ def createFileList (tag, date, xsec_a_path, outEvent, outRep):
     print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + '.ghep.root </evt_file>'
   print >>xml, '\t\t<xsec_file> input/xsec-vA-' + tag + '.root </xsec_file>'
   print >>xml, '\t</model>'
+  if not (regretags is None):
+     for rt in range(len(regretags)):
+        rversion, rdate = regretags[rt].split("/") 
+	print >>xml, '\t<model name="' + regretags[rt] + ':default:world' '">'
+        for key in nuPDG.iterkeys():
+           print >>xml, '\t\t<evt_file format="ghep"> input/regre/' +  regretags[rt] +'/gntp.' + key + '.ghep.root </evt_file>'
+        print >>xml, '\t\t<xsec_file> input/regre/'  + regretags[rt] + '/xsec-vA-' + rversion + '.root </xsec_file>'
+        print >>xml, '\t</model>'
   print >>xml, '</genie_simulation_outputs>'
   xml.close()
 
@@ -720,7 +728,7 @@ def createCmpConfig( tag, date, reportdir ):
       gxml.close()
       
 #   def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, outRepSng):
-def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep):
+def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, regretags, regredir):
   # check if job is done already
   if isDoneData (tag, date, outRep):
     msg.warning ("xsec validation plots found in " + outRep + " ... " + msg.BOLD + "skipping xsecval:fillDAG_data\n", 1)
@@ -735,7 +743,14 @@ def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep):
     outFile = "genie_" + tag + "_" + comparisons[comp]['outprefix'] + comp 
     cmd = "gvld_general_comparison --global-config input/" + inFile + " -o " + outFile 
     logFile = "gvld_nu_xsec_" + comp + ".log"
-    jobsub.addJob (inputs, outRep, logFile, cmd)
+    regre = None
+    if not (regretags is None):
+       regre = ""
+       for rt in range(len(regretags)):
+          rversion, rdate = regretags[rt].split("/")
+	  regre = regre + regredir + "/" + regretags[rt] + "/xsec/nuA/xsec-vA-" + rversion + ".root " 
+	  regre = regre + regredir + "/" + regretags[rt] + "/events/xsec_validation/*.ghep.root " 
+    jobsub.addJob (inputs, outRep, logFile, cmd, regre)
   # done
   jobsub.add ("</parallel>")
 

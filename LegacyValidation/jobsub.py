@@ -3,14 +3,12 @@ import os, re, subprocess
 
 class Jobsub:
     # handle jobsub command for runGENIE.sh in dag file  
-    # TODO - need to get more clever with lifetimes for jobs (stage-unique)
+    # TODO - need to get more clever with lifetimes for jobs...
     def __init__ (self, args, lifetime='23h'):
         """
         init a proper jobsub command for dag
         """
         # -n option is mandatory for jobsub (otherwise jobs will be run twice...)
-        # NOTE: add `--timeout Nh` or `--timeout Nm` to force a kill after a
-        # period of time (to get logs no matter what) if needed 
         self.basecmd = "jobsub -n --OS=%s --resource-provides=usage_model=%s -G %s --expected-lifetime=%s file://%s -p %s -v %s -d %s" % \
                 (args.os, args.resource, args.group, lifetime, args.run, args.builds+"/"+args.buildNameGE, args.builds+"/"+args.buildNameCmp, args.debug)
         # create dag file
@@ -41,7 +39,7 @@ class Jobsub:
         msg.info ("Submitting: " + self.dagFile + "\n")
         subprocess.Popen (self.setup + self.subdag, shell=True, executable="/bin/bash")
 
-    def addJob (self, inputs, output, logfile, cmd):
+    def addJob (self, inputs, output, logfile, cmd, regre):
         """
         print given command with given options to dag file (input files to
         copy, path for output, logfilename, command)
@@ -51,11 +49,21 @@ class Jobsub:
         cmd = re.sub (' ', "SPACE", cmd)   
         inputs = re.sub (' ', "SPACE", inputs)
         # write full jobsub command to dag file
-        print >>self.dag, self.basecmd + \
+        if regre is None:
+	   print >>self.dag, self.basecmd + \
                           " -i " + inputs + \
                           " -o " + output + \
                           " -l " + logfile + \
                           " -c " + cmd
+        else:
+	   regre = re.sub (" ", "SPACE", regre )
+	   print >>self.dag, self.basecmd + \
+                          " -i " + inputs + \
+                          " -o " + output + \
+                          " -l " + logfile + \
+                          " -r " + regre + \
+			  " -c " + cmd \
+	   
                       
     # print custom text to dag
     def add (self, text):

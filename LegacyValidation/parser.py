@@ -5,7 +5,7 @@ import argparse
 def getArgs(
         require_output_path=True,
         require_run_path=True,
-        usage="./runLegacyValidation.py <options>"
+        usage="./runLegacyValidation_test.py <options>"
         ):
     parser = argparse.ArgumentParser(
             description = "GENIE Legacy Validation @ FERMILAB",
@@ -40,6 +40,16 @@ def getArgs(
             metavar = "[comparisons tag]", default = "trunk",
             help = "default = trunk"
             )
+
+# regression tests (optional)
+    parser.add_argument("--regre", action = "store", dest = "regretags",
+           metavar = "['Tag1/Date1 Tag2/Date2 ...']", 
+	   help = "tags and dates for regresion tests (optional)"
+	   )
+    parser.add_argument("--regre_dir", action = "store", dest = "regredir",
+           metavar = "[path to regression dir (optional)]", 
+	   help = "default = "
+	   )
 
     required = parser.add_argument_group("required arguments")
     required.add_argument(

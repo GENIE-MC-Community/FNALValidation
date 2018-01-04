@@ -4,7 +4,7 @@ import msg
 import re, os
 
 nKnots    = "200" # no. of knots for gmkspl
-maxEnergy = "150" # maximum energy for gmkspl
+maxEnergy = "500" # maximum energy for gmkspl
 
 # neutrino pdg codes for given job 
 nuPDG = {'chm'           : '12,-12,14,-14,16,-16',
@@ -34,9 +34,6 @@ nuPDG = {'chm'           : '12,-12,14,-14,16,-16',
          'res_taubar_nc' : '-16',
          'res_tau_cc'    : '16',
          'res_tau_nc'    : '16' }
-# for debugging, can use a short set
-# nuPDG = {'qel'           : '12,-12,14,-14',
-#          'nue'           : '12,-12,14,-14'}
          
 # target pdg codes for given job 
 targetPDG = {'chm'           : '1000010010,1000000010',
@@ -145,7 +142,7 @@ def fillDAGPart (jobsub, tag, out):
     cmd = "gmkspl -p " + nuPDG[key] + " -t " + targetPDG[key] + " -n " + nKnots + " -e " + maxEnergy \
           + " -o " + outXML[key] + " --event-generator-list " + generatorList[key]
     logFile = "gmkspl." + outXML[key] + ".log"
-    jobsub.addJob (inputs, out, logFile, cmd)
+    jobsub.addJob (inputs, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
   
@@ -164,13 +161,13 @@ def fillDAGMerge (jobsub, tag, out):
   cmd = "gspladd -d input -o " + xmlFile
   inputs = out + "/*.xml"
   logFile = "gspladd.log"
-  jobsub.addJob (inputs, out, logFile, cmd)
+  jobsub.addJob (inputs, out, logFile, cmd, None)
   # convert to root job
   rootFile = "xsec-vN-" + tag + ".root"
   cmd = "gspl2root -p 12,-12,14,-14,16,-16 -t 1000010010,1000000010 -o " + rootFile + " -f input/" + xmlFile
   inputs = out + "/" + xmlFile
-  logFile = "gspl2root.log"
-  jobsub.addJob (inputs, out, logFile, cmd)
+  logFile = "gspladd.log"
+  jobsub.addJob (inputs, out, logFile, cmd, None)
   # done
   jobsub.add ("</serial>")
 

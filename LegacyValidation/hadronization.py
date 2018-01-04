@@ -21,7 +21,7 @@ energy = "0.5,80.0"
 generatorList = "HadronizationTest"
 flux = "1/x"
 
-def fillDAG (jobsub, tag, date, paths):
+def fillDAG (jobsub, tag, date, paths, regretags=None, regredir=None):
   fillDAG_GHEP (jobsub, tag, paths['xsec_N'], paths['hadron'])
   fillDAG_GST (jobsub, paths['hadron'])
   createFileList (tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'])
@@ -44,7 +44,7 @@ def fillDAG_GHEP (jobsub, tag, xsec_n_path, out):
   for key in nuPDG.iterkeys():
     cmd = "gevgen " + options + " -p " + nuPDG[key] + " -t " + targetPDG[key] + " -r " + key
     logFile = "gevgen_" + key + ".log"
-    jobsub.addJob (xsec_n_path + "/" + inputFile, out, logFile, cmd)
+    jobsub.addJob (xsec_n_path + "/" + inputFile, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
 
@@ -62,7 +62,7 @@ def fillDAG_GST (jobsub, out):
     inputFile = "gntp." + key + ".ghep.root"
     logFile = "gntpc" + key + ".log"
     cmd = "gntpc -f gst -i input/" + inputFile
-    jobsub.addJob (out + "/" + inputFile, out, logFile, cmd)
+    jobsub.addJob (out + "/" + inputFile, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
 
@@ -83,7 +83,7 @@ def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep):
   # add the command to dag
   inputs = outRep + "/" + inFile + " " + xsec_n_path + "/xsec-vN-" + tag + ".root " + outEvents + "/*.ghep.root"
   logFile = "gvld_hadronz_test.log"
-  jobsub.addJob (inputs, outRep, logFile, cmd)
+  jobsub.addJob (inputs, outRep, logFile, cmd, None)
   # done
   jobsub.add ("</serial>")
   

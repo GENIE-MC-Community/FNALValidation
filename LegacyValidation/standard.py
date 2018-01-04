@@ -120,7 +120,7 @@ generatorList = {
   '9203' : 'IMD',
   '9204' : 'IMD'}
 
-def fillDAG (jobsub, tag, paths):
+def fillDAG (jobsub, tag, paths, regretags=None, regredir=None):
   fillDAG_GHEP (jobsub, tag, paths['xsec_A'], paths['mctest'])
   fillDAG_GST (jobsub, paths['mctest'])
   fillDAG_sanity (jobsub, paths['mctest'], paths['sanity'])
@@ -142,7 +142,7 @@ def fillDAG_GHEP (jobsub, tag, xsec_a_path, out):
     cmd = "gevgen -n " + nEvents[key] + " -e " + energy[key] + " -p " + nuPDG[key] + " -t " + targetPDG[key] + \
           " -r " + key + " --event-generator-list " + generatorList[key] + options
     logFile = "gevgen_" + key + ".log"
-    jobsub.addJob (xsec_a_path + "/" + inputFile, out, logFile, cmd)
+    jobsub.addJob (xsec_a_path + "/" + inputFile, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
 
@@ -160,7 +160,7 @@ def fillDAG_GST (jobsub, out):
     inputFile = "gntp." + key + ".ghep.root"
     cmd = "gntpc -f gst -i input/" + inputFile
     logFile = "gntpc" + key + ".log"
-    jobsub.addJob (out + "/" + inputFile, out, logFile, cmd)
+    jobsub.addJob (out + "/" + inputFile, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
 
@@ -191,7 +191,7 @@ def fillDAG_sanity (jobsub, events, out):
 # --> old name -->    cmd = "gvld_sample_scan -f input/" + inputFile + " -o " + output + options
     cmd = "gevscan -f input/" + inputFile + " -o " + output + options
     logFile = "gevscan." + key + ".log"
-    jobsub.addJob (events + "/" + inputFile, out, logFile, cmd)
+    jobsub.addJob (events + "/" + inputFile, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
 

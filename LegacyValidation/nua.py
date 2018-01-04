@@ -3,7 +3,7 @@
 import msg
 import re, os
 
-nKnots    = "100" # no. of knots for gmkspl
+nKnots    = "200" # no. of knots for gmkspl
 maxEnergy = "150"  # maximum energy for gmkspl
 
 nuPDG = "12,-12,14,-14" # pdg of neutrinos to process
@@ -43,7 +43,7 @@ def fillDAGPart (jobsub, tag, xsec_n_path, out):
     cmd = "gmkspl -p " + nuPDG + " -t " + t + " -n " + nKnots + " -e " + maxEnergy + options + \
           " --output-cross-sections " + outputFile
     logFile = "gxspl_" + t + ".xml.log"
-    jobsub.addJob (inputs, out, logFile, cmd)
+    jobsub.addJob (inputs, out, logFile, cmd, None)
   # done
   jobsub.add ("</parallel>")
   
@@ -62,13 +62,13 @@ def fillDAGMerge (jobsub, tag, out):
   cmd = "gspladd -d input -o " + xmlFile
   inputs = out + "/*.xml"
   logFile = "gspladd.log"
-  jobsub.addJob (inputs, out, logFile, cmd)
+  jobsub.addJob (inputs, out, logFile, cmd, None)
   # convert to root job
   rootFile = "xsec-vA-" + tag + ".root"
   cmd = "gspl2root -p " + nuPDG + " -t " + ",".join(targets) + " -o " + rootFile + " -f input/" + xmlFile
   inputs = out + "/" + xmlFile
   logFile = "gspl2root.log"
-  jobsub.addJob (inputs, out, logFile, cmd)
+  jobsub.addJob (inputs, out, logFile, cmd, None)
   # done
   jobsub.add ("</serial>")
 
