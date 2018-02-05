@@ -6,8 +6,12 @@ import parser, msg
 import outputPaths
 # xsec splines
 import nun, nua
+# "sanity check" (events scan)
+import standard
+# old-style validation
+import hadronization
 # new-style validation (minerva, etc.)
-import minerva
+import xsecval, minerva
 # general
 import os, datetime
 
@@ -53,10 +57,15 @@ if __name__ == "__main__":
   # print configuration summary
   initMessage (args)
 
-  # preapre folder structure for output
+  # preapre folder(s) structure for output
   args.paths = outputPaths.prepare (args.output + "/" + args.tag + "/" + args.build_date)
 
-  # initialize jobsub
+  # initialize jobsub 
+  #
+  # NOTE: at this point, we are using it only to fill up DAGs;
+  #       we are not submitting anything...
+  #       ...maybe the DGA-filling part needs to make into a separate module ?
+  #
   args.buildNameGE = "generator_" + args.tag + "_" + args.build_date
   args.buildNameCmp = "comparisons_" + args.cmptag + "_" + args.build_date
   jobsub = Jobsub (args)
@@ -64,8 +73,14 @@ if __name__ == "__main__":
   # fill dag files with jobs
   msg.info ("Adding jobs to dag file: " + jobsub.dagFile + "\n")
   # nucleon cross sections
-  nun.fillDAG (jobsub, args.tag, args.paths)
+  nun.fillDAG ( jobsub, args.tag, args.paths )
   # nucleus cross sections
-  nua.fillDAG (jobsub, args.tag, args.paths)
+  nua.fillDAG ( jobsub, args.tag, args.paths )
+  # standard mc sanity check (events scan)
+  standard.fillDAG( jobsub, args.tag, args.paths )
+  # xsec validation
+  xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.regretags, args.regredir )
+  # hadronization test
+  hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths )
   # MINERvA test
   minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.regretags, args.regredir )
