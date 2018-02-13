@@ -673,6 +673,7 @@ def fillDAG_GST (jobsub, out):
   jobsub.add ("</parallel>")
 
 def createFileList (tag, date, xsec_a_path, outEvent, outRep, regretags):
+  
   # create xml file with the file list in the format as src/scripts/production/misc/make_genie_sim_file_list.pl
   xmlFile = outRep + "/file_list-" + tag + "-" + date + ".xml"
   try: os.remove (xmlFile)

@@ -68,6 +68,14 @@ if __name__ == "__main__":
   #
   args.buildNameGE = "generator_" + args.tag + "_" + args.build_date
   args.buildNameCmp = "comparisons_" + args.cmptag + "_" + args.build_date
+
+  # regresion tests (optional)
+  if not (args.regretags is None):
+     args.regretags = args.regretags.split()
+     # also need to check/assert that args.regredir is not None !!! otherwise throw !!!
+     # assert ( not (args.regredir is None) ), "Path to regression dir is required for regression tests"
+     if args.regredir is None: raise AssertionError
+
   jobsub = Jobsub (args)
 
   # fill dag files with jobs
