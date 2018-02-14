@@ -16,12 +16,12 @@ import xsecval, minerva
 import os, datetime
 
 # example format:
-# ./runLegacyValidation.py --genie_tag trunk  \ 
+# ./composeDAGandXML.py --genie_tag trunk  \ 
 #                          --build_date YYYY-MM-DD  \
 #                          --run_path /path/to/runGENIE.sh \ # e.g. /grid/fermiapp/genie/legacyValidation_update_1/runGENIE.sh
 #                          --builds DUMMY \ 
 #                          --output OUTPUT \ # e.g. /pnfs/genie/scratch/users/yarba_j/GENIE_LegacyValidation 
-#  optional:               [ --regre 'R-2_12_6/2017-09-11 [reg2, reg3,...]' --regre_dir /pnfs/genie/persistent/users/yarba_j/GENIE_LegacyValidation ]
+#  optional:               [ --regre 'R-2_12_6/2017-09-11 [reg2 reg3...]' --regre_dir /pnfs/genie/persistent/users/yarba_j/GENIE_LegacyValidation ]
 
 def initMessage (args):
   print msg.BLUE

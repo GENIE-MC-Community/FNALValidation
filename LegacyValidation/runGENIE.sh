@@ -1,28 +1,39 @@
 #!/bin/bash
 
-while getopts p:v:o:i:l:c:d: OPT
+while getopts p:v:o:i:l:c:d:r: OPT
 do
   case ${OPT} in
     p) # path to genie top dir
+      echo "opt p: OPTARG = $OPTARG"
       export GENIE=$OPTARG
       ;;
     v) # path to comparisons top dir
+      echo "opt v: OPTARG = $OPTARG"
       export GENIE_COMPARISONS=$OPTARG
       ;;
     o) # output directory
+      echo "opt o: OPTARG = $OPTARG"
       out=$OPTARG
       ;;
     i) # input files (fileA fileB fileC...)
+      echo "opt i: OPTARG = $OPTARG"
       input=(`echo $OPTARG | sed 's/SPACE/ /g'`)
       ;;
     l) # logfile name
+      echo "opt l: OPTARG = $OPTARG"
       log=$OPTARG
       ;;
     d) # print out to logfile
+      echo "opt d: OPTARG = $OPTARG"
       debug=$OPTARG
       ;;
     c) # command to run
+      echo "opt c: OPTARG = $OPTARG"
       cmd=`echo $OPTARG | sed 's/SPACE/ /g' | sed "s/SQUOTE/'/g"` 
+      ;;
+    r) # regression test
+      echo "opt r: OPTARG = $OPTARG"
+      regre=(`echo $OPTARG | sed 's/SPACE/ /g'`)
       ;;
   esac
 done
@@ -33,7 +44,8 @@ done
 # source $GUPSBASE/products/genie/externals/setup
 
 # bootstrap setup off larsoft repo...
-source /grid/fermiapp/products/genie/bootstrap_genie_ups.sh
+# ---> source /grid/fermiapp/products/genie/bootstrap_genie_ups.sh
+source /cvmfs/fermilab.opensciencegrid.org/products/genie/bootstrap_genie_ups.sh
 
 # These don't need to be debug 
 #
@@ -46,7 +58,7 @@ source /grid/fermiapp/products/genie/bootstrap_genie_ups.sh
 #setup root v5_34_25a -q e7:nu:prof
 #setup lhapdf v5_9_1b -q e7:prof
 #setup log4cpp v1_1_1b -q e7:prof
-
+#
 # switch to root6 for the gsl v2.3 bundled with it
 # also, use e14 qualifier(s)
 #
@@ -123,6 +135,73 @@ do
 done # end loop over tokens in input
 
 fi  # check `input == none`
+
+echo "regre = $regre"
+
+if [ "$regre" != "none" ]; then
+
+    echo "regression test requested..."
+    echo "regression test requested..." >> $log
+
+for rtoken in "${regre[@]}"
+do
+
+    rpat=`basename "$rtoken"`
+    rdir=`dirname "$rtoken"`
+    echo "rdir = $rdir"
+    echo "rdir = $rdir" >> $log
+    echo "rpat = $rpat"
+    echo "rpat = $rpat" >> $log
+    ifdh findMatchingFiles "$rdir" "$rpat"
+    ifdh findMatchingFiles "$rdir" "$rpat" >> $log
+    regrelist=`ifdh findMatchingFiles "$rdir" "$rpat"`
+   
+    exp=`basename "$rdir"`
+    d1=`dirname "$rdir"`
+    d2=`dirname "$d1"`
+    rdate=`basename "$d2"`
+    d3=`dirname "$d2"`
+    rversion=`basename "$d3"`
+    echo "exp = $exp"
+    echo "exp = $exp" >> $log
+    echo "d1 = $d1"
+    echo "d1 = $d1" >> $log
+    echo "d2 = $d2"
+    echo "d2 = $d2" >> $log
+    echo "rdate = $rdate"
+    echo "rdate = $rdate" >> $log
+    echo "d3 = $d3"
+    echo "d3 = $d3" >> $log
+    echo "rversion = $rversion"
+    echo "rversion = $rversion" >> $log
+   
+    echo "making local input/regression folder if not there yet.."
+    echo "making local input/regression folder if not there yet.." >> $log
+    if [ ! -d "input/regre" ]; then
+       mkdir input/regre
+    fi
+    if [ ! -d "input/regre/$rversion" ]; then
+       mkdir input/regre/$rversion
+    fi
+    if [ ! -d "input/regre/$rversion/$rdate" ]; then
+       mkdir input/regre/$rversion/$rdate
+    fi
+
+    echo "running ifdh fetch for regression MC files"
+    echo "running ifdh fetch for regression MC files" >> $log
+    IFDH_DATA_DIR=./input/regre/$rversion/$rdate ifdh fetchSharedFiles $regrelist
+
+    if [ "$debug" == "true" ]
+    then
+        echo "Checking contents of local input/regression folder: "
+        ls -lh input/regre/$rversion/$rdate
+    fi
+    echo "Checking contents of local input/regression folder: " >> $log
+    ls -lh input/regre/$rversion/$rdate >> $log   
+
+done # end loop over rtokens in regre
+
+fi # check `regre == "none" `
 
 ### run the command ###
 
