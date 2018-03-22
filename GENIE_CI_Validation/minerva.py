@@ -45,7 +45,7 @@ data_struct = {
 		   },
    'nubar-CCQEQ2' : { 'projectile' : '-14', 'energy' : '1.5,10.',
                       'flux' : 'data/fluxes/minerva/Release-2013/CCQEQ2/nubar-flux-MINERvA.data',
-		      'releaselabel' : 'numubar_2013',
+		      'releaselabel' : 'numubar_r2013',
 		      'datafiles' : ['Release-2013/CCQEQ2/nubar-Hydrocarbon.data'],
 		      'mcpredictions' : [ 'MINERvACCQEQ2' ]
                     },
