@@ -21,11 +21,11 @@ energy = "0.5,80.0"
 generatorList = "HadronizationTest"
 flux = "1/x"
 
-def fillDAG (jobsub, tag, date, paths, regretags=None, regredir=None):
+def fillDAG ( jobsub, tag, date, paths, regretags, regredir ):
   fillDAG_GHEP (jobsub, tag, paths['xsec_N'], paths['hadron'])
   fillDAG_GST (jobsub, paths['hadron'])
-  createFileList (tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'])
-  fillDAG_data (jobsub, tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'])
+  createFileList ( tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], regretags )
+  fillDAG_data ( jobsub, tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], regretags, regredir )
 
 def fillDAG_GHEP (jobsub, tag, xsec_n_path, out):
   # check if job is done already
@@ -66,7 +66,7 @@ def fillDAG_GST (jobsub, out):
   # done
   jobsub.add ("</parallel>")
 
-def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep):
+def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep, regretags, regredir):
   # check if job is done already
   if isDoneData (tag, date, outRep):
     msg.warning ("hadronization test plots found in " + outRep + " ... " + msg.BOLD + "skipping hadronization:fillDAG_data\n", 1)
@@ -83,7 +83,14 @@ def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep):
   # add the command to dag
   inputs = outRep + "/" + inFile + " " + xsec_n_path + "/xsec-vN-" + tag + ".root " + outEvents + "/*.ghep.root"
   logFile = "gvld_hadronz_test.log"
-  jobsub.addJob (inputs, outRep, logFile, cmd, None)
+  regre = None
+  if not (regretags is None):
+     regre = ""
+     for rt in range(len(regretags)):
+        rversion, rdate = regretags[rt].split("/")
+	regre = regre + regredir + "/" + regretags[rt] + "/xsec/nuN/xsec-vN-" + rversion + ".root " 
+	regre = regre + regredir + "/" + regretags[rt] + "/events/hadronization/*.ghep.root " 
+  jobsub.addJob ( inputs, outRep, logFile, cmd, regre )
   # done
   jobsub.add ("</serial>")
   
@@ -104,7 +111,7 @@ def isDoneData (tag, date, path):
   if "genie_" + tag + "-hadronization_test.ps" not in os.listdir (path): return False
   return True
   
-def createFileList (tag, date, xsec_n_path, outEvent, outRep):
+def createFileList ( tag, date, xsec_n_path, outEvent, outRep, regretags ):
   # create xml file with the file list in the format as src/scripts/production/misc/make_genie_sim_file_list.pl
   xmlFile = outRep + "/file_list-" + tag + "-" + date + ".xml"
   try: os.remove (xmlFile)
@@ -117,6 +124,14 @@ def createFileList (tag, date, xsec_n_path, outEvent, outRep):
     print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + '.ghep.root </evt_file>'
   print >>xml, '\t\t<xsec_file> input/xsec-vN-' + tag + '.root </xsec_file>'
   print >>xml, '\t</model>'
+  if not (regretags is None):
+     for rt in range(len(regretags)):
+	print >>xml, '\t<model name="' + regretags[rt] + '">'
+        rversion, rdate = regretags[rt].split("/")
+	for key in nuPDG.iterkeys():
+           print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '.ghep.root </evt_file>'
+        print  >>xml, '\t\t<xsec_file> input/regre/' + regretags[rt] + '/xsec-vN-' + rversion + '.root </xsec_file>'
+	print  >>xml, '\t</model>'
   print >>xml, '</genie_simulation_outputs>'
   xml.close()
 

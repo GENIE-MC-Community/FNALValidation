@@ -89,6 +89,6 @@ if __name__ == "__main__":
   # xsec validation
   xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.regretags, args.regredir )
   # hadronization test
-  hadronization.fillDAG (jobsub, args.tag, args.build_date, args.paths )
+  hadronization.fillDAG ( jobsub, args.tag, args.build_date, args.paths, args.regretags, args.regredir )
   # MINERvA test
   minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.regretags, args.regredir )

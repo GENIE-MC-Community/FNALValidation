@@ -6,6 +6,21 @@ import re, os
 nKnots    = "200" # no. of knots for gmkspl
 maxEnergy = "500" # maximum energy for gmkspl
 
+data_struct = {
+   'nue_n' : { 'projectile' : '12', 'target' : '01000000010', 'output' : 'pgxspl-nue_n.xml', },
+   'nuebar_n' : {  'projectile' : '-12', 'target' : '01000000010', 'output' : 'pgxspl-nuebar_n.xml' },
+   'numu_n' : { 'projectile' : '14', 'target' : '01000000010', 'output' : 'pgxspl-numu_n.xml' },
+   'numubar_n' : { 'projectile' : '-14', 'target' : '01000000010', 'output' : 'pgxspl-numubar_n.xml' },
+   'nutau_n' : { 'projectile' : '16', 'target' : '01000000010', 'output' : 'pgxspl-nutau_n.xml' },
+   'nutaubar_n' : { 'projectile' : '-16', 'target' : '01000000010', 'output' : 'pgxspl-nutaubar_n.xml' },
+   'nue_p' : { 'projectile' : '12', 'target' : '01000010010', 'output' : 'pgxspl-nue_p.xml' },
+   'nuebar_p' : {  'projectile' : '-12', 'target' : '01000010010', 'output' : 'pgxspl-nuebar_p.xml' },
+   'numu_p' : { 'projectile' : '14', 'target' : '01000010010', 'output' : 'pgxspl-numu_p.xml' },
+   'numubar_p' : { 'projectile' : '-14', 'target' : '01000010010', 'output' : 'pgxspl-numubar_p.xmll' },
+   'nutau_p' : { 'projectile' : '16', 'target' : '01000010010', 'output' : 'pgxspl-nutau_p.xml' },
+   'nutaubar_p' : { 'projectile' : '-16', 'target' : '01000010010', 'output' : 'pgxspl-nutaubar_p.xml' }    
+}
+
 # neutrino pdg codes for given job 
 nuPDG = {'chm'           : '12,-12,14,-14,16,-16',
          'nue'           : '12,-12,14,-14,16,-16',
@@ -143,6 +158,15 @@ def fillDAGPart (jobsub, tag, out):
           + " -o " + outXML[key] + " --event-generator-list " + generatorList[key]
     logFile = "gmkspl." + outXML[key] + ".log"
     jobsub.addJob (inputs, out, logFile, cmd, None)
+  
+# possibly, for future developments...
+#
+#  for key in data_struct.iterkeys():
+#     cmd = "gmkspl -p " + data_struct[key]['projectile'] + " -t " + data_struct[key]['target'] \
+#         + " -n " + nKnots + " -e " + maxEnergy + " -o " + data_struct[key]['output']
+#     logFile = "gmkspl." + key + ".log"
+#     jobsub.addJob( inputs, out, logFile, cmd, None )
+  
   # done
   jobsub.add ("</parallel>")
   
