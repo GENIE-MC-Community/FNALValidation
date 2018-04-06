@@ -17,16 +17,16 @@ data_struct = {
 		   'datafiles' : ['Release-2013/CCQEQ2/nu-Hydrocarbon.data'], # FIXME !!
 		   'mcpredictions' : ['MINERvACCQEQ2']                         # Redo later as PAIRS (dict.)
 		 },
-   'nu-CoherentPi' : { 'projectile' : '14', 'energy' : '1.5,20.',
-                       'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nu-flux-MINERvA.data',
-                       'releaselabel' : 'numu_r2014',
-		       'datafiles' : [ 'Release-2014/CoherentPion/nu-Hydrocarbon-PionEnergy.data', 
-		                       'Release-2014/CoherentPion/nu-Hydrocarbon-PionPolarAngle.data'
-				     ],
-		       'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
-		                            'MINERvACoherentPionPolarAngle' 
-					 ]  
-                     }, 
+#   'nu-CoherentPi' : { 'projectile' : '14', 'energy' : '1.5,20.',
+#                       'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nu-flux-MINERvA.data',
+#                       'releaselabel' : 'numu_r2014',
+#		       'datafiles' : [ 'Release-2014/CoherentPion/nu-Hydrocarbon-PionEnergy.data', 
+#		                       'Release-2014/CoherentPion/nu-Hydrocarbon-PionPolarAngle.data'
+#				     ],
+#		       'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
+#		                            'MINERvACoherentPionPolarAngle' 
+#					 ]  
+#                     }, 
    'nu-CCMuProtonFS' : { 'projectile' : '14', 'energy' : '0.,100.',
                          'flux' : 'data/fluxes/minerva/Release-2015/MuProtonFS/nu-flux-MINERvA.data',
 			 'releaselabel' : 'numu_r2015',
@@ -49,16 +49,16 @@ data_struct = {
 		      'datafiles' : ['Release-2013/CCQEQ2/nubar-Hydrocarbon.data'],
 		      'mcpredictions' : [ 'MINERvACCQEQ2' ]
                     },
-   'nubar-CoherentPi' : { 'projectile' : '-14', 'energy' : '1.5,20.',
-                          'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nubar-flux-MINERvA.data',
-                          'releaselabel' : 'numubar_r2014',
-		          'datafiles' : [ 'Release-2014/CoherentPion/nubar-Hydrocarbon-PionEnergy.data', 
-		                          'Release-2014/CoherentPion/nubar-Hydrocarbon-PionPolarAngle.data'
-				        ],
-		          'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
-		                              'MINERvACoherentPionPolarAngle' 
-					    ]  
-                        }, 
+#   'nubar-CoherentPi' : { 'projectile' : '-14', 'energy' : '1.5,20.',
+#                          'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nubar-flux-MINERvA.data',
+#                          'releaselabel' : 'numubar_r2014',
+#		          'datafiles' : [ 'Release-2014/CoherentPion/nubar-Hydrocarbon-PionEnergy.data', 
+#		                          'Release-2014/CoherentPion/nubar-Hydrocarbon-PionPolarAngle.data'
+#				        ],
+#		          'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
+#		                              'MINERvACoherentPionPolarAngle' 
+#					    ]  
+#                        }, 
    'nubar-CC1Pi0' : { 'projectile' : '-14', 'energy' : '0.1,20.',
                       'flux' : 'data/fluxes/minerva/Release-2015/SinglePi0/nubar-flux-MINERvA.data',
                       'releaselabel' : 'numu_r2015',
