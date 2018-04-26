@@ -1,6 +1,7 @@
 # fill dag with hadronization test jobs
 
 import msg
+import outputPaths
 import os
 
 nuPDG = {
@@ -21,21 +22,24 @@ energy = "0.5,80.0"
 generatorList = "HadronizationTest"
 flux = "1/x"
 
-def fillDAG ( jobsub, tag, date, paths, regretags, regredir ):
-  fillDAG_GHEP (jobsub, tag, paths['xsec_N'], paths['hadron'])
-  fillDAG_GST (jobsub, paths['hadron'])
-  createFileList ( tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], regretags )
-  fillDAG_data ( jobsub, tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], regretags, regredir )
+def fillDAG ( jobsub, tag, date, paths, tunes, regretags, regredir ):
+  outputPaths.expand( paths['hadron'], tunes )
+  fillDAG_GHEP (jobsub, tag, paths['xsec_N'], paths['hadron'], tunes)
+  fillDAG_GST (jobsub, paths['hadron'], tunes)
+  createFileList ( tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], tunes, regretags )
+  fillDAG_data ( jobsub, tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], tunes, regretags, regredir )
 
-def fillDAG_GHEP (jobsub, tag, xsec_n_path, out):
+def fillDAG_GHEP (jobsub, tag, xsec_n_path, out, tunes):
   # check if job is done already
-  if isDoneGHEP (out):
+  if isDoneGHEP (out, tunes):
     msg.warning ("hadornization test ghep files found in " + out + " ... " + msg.BOLD + "skipping hadronization:fillDAG_GHEP\n", 1)
     return
   #not done, add jobs to dag
   msg.info ("\tAdding hadronization test (ghep) jobs\n")
+
   # in parallel mode
   jobsub.add ("<parallel>")
+
   # common configuration
   inputFile = "gxspl-vN-" + tag + ".xml"
   options   = " -n " + nEvents + " -e " + energy + " -f " + flux + " --seed " + mcseed + \
@@ -45,16 +49,24 @@ def fillDAG_GHEP (jobsub, tag, xsec_n_path, out):
     cmd = "gevgen " + options + " -p " + nuPDG[key] + " -t " + targetPDG[key] + " -r " + key
     logFile = "gevgen_" + key + ".log"
     jobsub.addJob (xsec_n_path + "/" + inputFile, out, logFile, cmd, None)
+    # same for tunes if specified
+    if not (tunes is None):
+       for tn in range(len(tunes)):
+          cmdTune = "gevgen " + options + " --tune " + tunes[tn] + " -p " + nuPDG[key] + " -t " + targetPDG[key] + " -r " + key + \
+	             " -o " + tunes[tn] + "-gntp." + key + ".ghep.root"
+	  jobsub.addJob( xsec_n_path+"/"+tunes[tn]+"/"+tunes[tn]+"-"+inputFile, out+"/"+tunes[tn], tunes[tn]+"-"+logFile, cmdTune, None )
+
   # done
   jobsub.add ("</parallel>")
 
-def fillDAG_GST (jobsub, out):
+def fillDAG_GST (jobsub, out, tunes):
   # check if job is done already
-  if isDoneGST (out):
+  if isDoneGST (out, tunes):
     msg.warning ("hadronization test gst files found in " + out + " ... " + msg.BOLD + "skipping hadronization:fillDAG_GST\n", 1)
     return
   # not done, add jobs to dag
   msg.info ("\tAdding hadronization test (gst) jobs\n")
+
   # in parallel mode
   jobsub.add ("<parallel>")
   # loop over keys and generate gntpc command
@@ -63,25 +75,33 @@ def fillDAG_GST (jobsub, out):
     logFile = "gntpc" + key + ".log"
     cmd = "gntpc -f gst -i input/" + inputFile
     jobsub.addJob (out + "/" + inputFile, out, logFile, cmd, None)
+    # same for tunes if specified
+    if not (tunes is None):
+       for tn in range(len(tunes)):
+          cmdTune = "gntpc -f gst -i input/" + tunes[tn] + "-" + inputFile
+	  jobsub.addJob( out+"/"+tunes[tn]+"/"+tunes[tn]+"-"+inputFile, out+"/"+tunes[tn], tunes[tn]+"-"+logFile, cmdTune, None )
+
   # done
   jobsub.add ("</parallel>")
 
-def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep, regretags, regredir):
+def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep, tunes, regretags, regredir):
   # check if job is done already
   if isDoneData (tag, date, outRep):
     msg.warning ("hadronization test plots found in " + outRep + " ... " + msg.BOLD + "skipping hadronization:fillDAG_data\n", 1)
     return
   # not done, add jobs to dag
   msg.info ("\tAdding hadronization test (plots) jobs\n")    
+
   # in serial mode
   jobsub.add ("<serial>")
   inFile  = "file_list-" + tag + "-" + date + ".xml"
-## --> not needed...  outFile = "genie_" + tag + "-hadronization_test.ps"
-## --> old code -->  cmd = "gvld_hadronz_test -g input/" + inFile + " -o " + outFile
-## --> turned out, there is no '-o' argument field...  cmd = "gvld_hadronization -g input/" + inFile + " -o " + outFile
   cmd = "gvld_hadronization -g input/" + inFile 
   # add the command to dag
   inputs = outRep + "/" + inFile + " " + xsec_n_path + "/xsec-vN-" + tag + ".root " + outEvents + "/*.ghep.root"
+  if not (tunes is None):
+     for tn in range(len(tunes)):
+        inputs = inputs + " " + xsec_n_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vN-" + tag + ".root " + \
+	         outEvents + "/" + tunes[tn] + "/*.ghep.root"
   logFile = "gvld_hadronz_test.log"
   regre = None
   if not (regretags is None):
@@ -91,19 +111,28 @@ def fillDAG_data (jobsub, tag, date, xsec_n_path, outEvents, outRep, regretags, 
 	regre = regre + regredir + "/" + regretags[rt] + "/xsec/nuN/xsec-vN-" + rversion + ".root " 
 	regre = regre + regredir + "/" + regretags[rt] + "/events/hadronization/*.ghep.root " 
   jobsub.addJob ( inputs, outRep, logFile, cmd, regre )
+
   # done
   jobsub.add ("</serial>")
   
-def isDoneGHEP (path):
+def isDoneGHEP (path, tunes):
   # check if given path contains all ghep files
   for key in nuPDG.iterkeys():
     if "gntp." + key + ".ghep.root" not in os.listdir (path): return False
+    if not (tunes is None):
+       for tn in range(len(tunes)):
+          if tunes[tn] + "-gntp." + key + ".ghep.root" not in os.listdir (path+"/"+tunes[tn]): return False
+
   return True
   
-def isDoneGST (path):
+def isDoneGST (path, tunes):
   # check if given path contains all gst files
   for key in nuPDG.iterkeys():
     if "gntp." + key + ".gst.root" not in os.listdir (path): return False
+    if not (tunes is None):
+       for tn in range(len(tunes)):
+          if tunes[tn] + "-gntp." + key + ".gst.root" not in os.listdir (path+"/"+tunes[tn]): return False
+    
   return True
   
 def isDoneData (tag, date, path):
@@ -111,7 +140,7 @@ def isDoneData (tag, date, path):
   if "genie_" + tag + "-hadronization_test.ps" not in os.listdir (path): return False
   return True
   
-def createFileList ( tag, date, xsec_n_path, outEvent, outRep, regretags ):
+def createFileList ( tag, date, xsec_n_path, outEvent, outRep, tunes, regretags ):
   # create xml file with the file list in the format as src/scripts/production/misc/make_genie_sim_file_list.pl
   xmlFile = outRep + "/file_list-" + tag + "-" + date + ".xml"
   try: os.remove (xmlFile)
@@ -119,11 +148,20 @@ def createFileList ( tag, date, xsec_n_path, outEvent, outRep, regretags ):
   xml = open (xmlFile, 'w');
   print >>xml, '<?xml version="1.0" encoding="ISO-8859-1"?>'
   print >>xml, '<genie_simulation_outputs>'
-  print >>xml, '\t<model name="' + tag + '-' + date + '">'
+  print >>xml, '\t<model name="default-' + tag + '-' + date + '">'
   for key in nuPDG.iterkeys():
     print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + '.ghep.root </evt_file>'
   print >>xml, '\t\t<xsec_file> input/xsec-vN-' + tag + '.root </xsec_file>'
   print >>xml, '\t</model>'
+  # same for tunes if specified
+  if not (tunes is None):
+     for tn in range(len(tunes)):
+	print >>xml, '\t<model name="' + tunes[tn] + '-' + tag + '-' + date + '">'
+	for key in nuPDG.iterkeys():
+           print >>xml, '\t\t<evt_file format="ghep"> input/' + tunes[tn] + '-gntp.' + key + '.ghep.root </evt_file>'	
+        print >>xml, '\t\t<xsec_file> input/' + tunes[tn] + '-xsec-vN-' + tag + '.root </xsec_file>'
+	print  >>xml, '\t</model>'
+  # regression if specified
   if not (regretags is None):
      for rt in range(len(regretags)):
 	print >>xml, '\t<model name="' + regretags[rt] + '">'

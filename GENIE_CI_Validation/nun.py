@@ -1,6 +1,7 @@
 # fill dag file with neutrino-nucleon cross section splines jobs
 
 import msg
+import outputPaths
 import re, os
 
 nKnots    = "200" # no. of knots for gmkspl
@@ -137,13 +138,14 @@ outXML = {'chm'           : 'pgxspl-chm.xml',
           'res_tau_cc'    : 'pgxspl-res_tau_cc.xml',
           'res_tau_nc'    : 'pgxspl-res_tau_nc.xml'}
 
-def fillDAG (jobsub, tag, paths):
-  fillDAGPart (jobsub, tag, paths['xsec_N'])
-  fillDAGMerge (jobsub, tag, paths['xsec_N'])
+def fillDAG (jobsub, tag, paths, tunes):
+  outputPaths.expand( paths['xsec_N'], tunes )
+  fillDAGPart (jobsub, tag, paths['xsec_N'], tunes)
+  fillDAGMerge (jobsub, tag, paths['xsec_N'], tunes)
 
-def fillDAGPart (jobsub, tag, out):
+def fillDAGPart (jobsub, tag, out, tunes):
   # check if job is done already
-  if isDonePart (out):
+  if isDonePart (out,tunes):
     msg.warning ("Nucleons splines found in " + out + " ... " + msg.BOLD + "skipping nun:fillDAGPart\n", 1)
     return
   # not done, add jobs to dag
@@ -158,6 +160,15 @@ def fillDAGPart (jobsub, tag, out):
           + " -o " + outXML[key] + " --event-generator-list " + generatorList[key]
     logFile = "gmkspl." + outXML[key] + ".log"
     jobsub.addJob (inputs, out, logFile, cmd, None)
+    # same for tunes if specified
+    if not (tunes is None):
+       for tn in range(len(tunes)):
+          cmdTune = "gmkspl -p " + nuPDG[key] + " -t " + targetPDG[key] + " -n " + nKnots + " -e " + maxEnergy \
+	            + " -o " + tunes[tn] + "-" + outXML[key] + " --event-generator-list " + generatorList[key] \
+		    + " --tune " + tunes[tn]
+	  # cmdTune = cmd + " --tune " + tunes[tn]
+          logTune = tunes[tn] +  "-gmkspl." + outXML[key] + ".log"
+          jobsub.addJob ( inputs, out+"/"+tunes[tn], logTune, cmdTune, None)
   
 # possibly, for future developments...
 #
@@ -170,15 +181,17 @@ def fillDAGPart (jobsub, tag, out):
   # done
   jobsub.add ("</parallel>")
   
-def fillDAGMerge (jobsub, tag, out): 
+def fillDAGMerge (jobsub, tag, out, tunes): 
   # check if job is done already
-  if isDoneMerge (tag, out):
+  if isDoneMerge (tag, out, tunes):
     msg.warning ("Nucleons merged splines found in " + out + " ... " + msg.BOLD + "skipping nun:fillDAGMerge\n", 1)
     return
   # not done, add jobs to dag
   msg.info ("\tAdding nucleon splines (merge) jobs\n")
+
   # in serial mode
   jobsub.add ("<serial>")
+
   # common options
   xmlFile = "gxspl-vN-" + tag + ".xml"  
   # merge splines job
@@ -190,18 +203,40 @@ def fillDAGMerge (jobsub, tag, out):
   rootFile = "xsec-vN-" + tag + ".root"
   cmd = "gspl2root -p 12,-12,14,-14,16,-16 -t 1000010010,1000000010 -o " + rootFile + " -f input/" + xmlFile
   inputs = out + "/" + xmlFile
-  logFile = "gspladd.log"
+  logFile = "gspl2root.log"
   jobsub.addJob (inputs, out, logFile, cmd, None)
+  # same for tunes if specified
+  if not (tunes is None):
+     for tn in range(len(tunes)):
+        xmlTune = tunes[tn] + "-gxspl-vN-" + tag + ".xml"
+	cmdTune = "gspladd -d input -o " + xmlTune
+	logTune = tunes[tn] + "-gspladd.log"
+	jobsub.addJob( out+"/"+tunes[tn]+"/*.xml", out+"/"+tunes[tn], logTune, cmdTune, None)
+        rootTune = tunes[tn] + "-xsec-vN-" + tag + ".root"
+	logTune = tunes[tn] + "-gspl2root.log"
+	cmdTune ="gspl2root -p 12,-12,14,-14,16,-16 -t 1000010010,1000000010 -o " + rootTune + " -f input/" + xmlTune
+	jobsub.addJob( out+"/"+tunes[tn]+"/*.xml", out+"/"+tunes[tn], logTune, cmdTune, None )
+  
   # done
   jobsub.add ("</serial>")
 
-def isDonePart (path):
+def isDonePart (path,tunes):
   # check if given path contains all splines
   for spline in outXML.itervalues():
     if spline not in os.listdir (path): return False
+    if not (tunes is None):
+       for tn in range(len(tunes)):
+          if spline not in os.listdir(path+"/"+tunes[tn]): return False
+    
   return True
     
-def isDoneMerge (tag, path):
+def isDoneMerge (tag, path, tunes):
   if "gxspl-vN-" + tag + ".xml" not in os.listdir (path): return False
   if "xsec-vN-" + tag + ".root" not in os.listdir (path): return False
+  
+  if not (tunes is None):
+     for tn in range(len(tunes)):
+        if tunes[tn] + "-gxspl-vN-" + tag + ".xml" not in os.listdir(path+"/"+tunes[tn]): return False
+        if tunes[tn] + "-xsec-vN-" + tag + ".root" not in os.listdir (path+"/"+tunes[tn]): return False
+  
   return True

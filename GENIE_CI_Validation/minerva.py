@@ -1,6 +1,7 @@
 # fill dag with MINERvA-like test jobs
 
 import msg
+import outputPaths
 import os
 
 
@@ -71,14 +72,15 @@ data_struct = {
                     }
 }
 
-def fillDAG( jobsub, tag, date, paths, regretags, regredir ):
-   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'] )
-   createCmpConfigs( tag, date, paths['minervarep'], regretags )
-   fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['minerva'], paths['minervarep'], regretags, regredir )
+def fillDAG( jobsub, tag, date, paths, tunes, regretags, regredir ):
+   outputPaths.expand( paths['minerva'], tunes )
+   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['minerva'], tunes )
+   createCmpConfigs( tag, date, paths['minervarep'], tunes, regretags )
+   fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['minerva'], paths['minervarep'], tunes, regretags, regredir )
 
-def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
+def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, tunes ):
 
-   if eventFilesExist(out):
+   if eventFilesExist(out, tunes):
       msg.warning ("MINERvA test ghep files found in " + out + " ... " + msg.BOLD + "skipping minerva:fillDAG_GHEP\n", 1)
       return
 
@@ -86,6 +88,7 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
 
    # in parallel mode
    jobsub.add ("<parallel>")
+
    # common configuration
    inputxsec = "gxspl-vA-" + tag + ".xml"
    options = " -t " + target + " --cross-sections input/" + inputxsec 
@@ -100,12 +103,18 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out ):
            " -f " + data_struct[key]['flux'] + " -o gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
      logfile = "gevgen_" + key + ".log"
      # NOTE: FIXME - CHECK WHAT IT DOES !!!
-     jobsub.addJob ( xsec_a_path + "/" + inputxsec, out, logfile, cmd, None )
+     jobsub.addJob ( xsec_a_path+"/"+inputxsec, out, logfile, cmd, None )
+     # same for tunes if specified
+     if not ( tunes is None):
+        for tn in range(len(tunes)):
+	   cmdTune = "gevgen " + opt + " --tune " + tunes[tn] + " -p " + data_struct[key]['projectile'] + " -e " + data_struct[key]['energy'] + \
+	             " -f " + data_struct[key]['flux'] + " -o " + tunes[tn] + "-gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
+	   jobsub.addJob( xsec_a_path+"/"+tunes[tn]+"/"+tunes[tn]+"-"+inputxsec, out+"/"+tunes[tn], tunes[tn]+"-"+logfile, cmdTune, None )
    
    # done
    jobsub.add ("</parallel>")
 
-def createCmpConfigs( tag, date, reportdir, regretags ):
+def createCmpConfigs( tag, date, reportdir, tunes, regretags ):
 
    # start GLOBAL CMP CONFIG
    gcfg = reportdir + "/global-minerva-cfg-" + tag + "_" + date + ".xml"
@@ -128,12 +137,19 @@ def createCmpConfigs( tag, date, reportdir, regretags ):
       print >>xml, '<?xml version="1.0" encoding="ISO-8859-1"?>'
       print >>xml, '<genie_simulation_outputs>'
       print >>xml, '\t<model name="GENIE_' + tag + ":default:" + data_struct[key]['releaselabel'] + '">'
-      print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+      print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
       print >>xml, '\t</model>'
+      # tunes if specied
+      if not (tunes is None):
+         for tn in range(len(tunes)):
+	    print >>xml, '\t<model name="GENIE_' + tag + ':' + tunes[tn] + ':' + data_struct[key]['releaselabel'] + '">'
+	    print >>xml, '\t\t<evt_file format="ghep"> input/' + tunes[tn] + '-gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+	    print >>xml, '\t</model>'
+      # regression if specified
       if not (regretags is None):
          for rt in range(len(regretags)):
 	    print >>xml, '\t<model name="GENIE_' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
-	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
 	    print >>xml, '\t</model>'
       print >>xml, '</genie_simulation_outputs>'
       xml.close()
@@ -147,7 +163,6 @@ def createCmpConfigs( tag, date, reportdir, regretags ):
          print >>gxml, '\t\t\t\t\t<predictionclass> ' + data_struct[key]['mcpredictions'][i] + ' </predictionclass>'
          print >>gxml, '\t\t\t\t</spec>'
       
-      # ---> print >>gxml, '\t\t\t\t<genie> ' + xmlfile + ' </genie>'
       print >>gxml, '\t\t\t\t<genie> input' + gsimfile + ' </genie>'
       print >>gxml, '\t\t\t</comparison>'
    
@@ -156,7 +171,7 @@ def createCmpConfigs( tag, date, reportdir, regretags ):
    print >>gxml, '</config>'
    gxml.close()
    
-def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, regretags, regredir ):
+def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, regretags, regredir ):
 
    # check if job is done already
    if resultsExist ( tag, date, reportdir ):
@@ -172,6 +187,9 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, regretags,
    cmd = "gvld_general_comparison --global-config input/" + config + " -o " + plotfile
    # add the command to dag
    inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root"
+   if not (tunes is None):
+      for tn in range(len(tunes)):
+         inputs = " " + inputs + eventdir + "/" + tunes[tn] + "/*.ghep.root" 
    logfile = "gvld_general_comparison.log"
    regre = None
    if not (regretags is None):
@@ -182,10 +200,14 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, regretags,
    # done
    jobsub.add ("</serial>")
 
-def eventFilesExist( path ):
+def eventFilesExist( path, tunes ):
 
    for key in data_struct.iterkeys():
       if "gntp." + key + ".ghep.root" not in os.listdir(path): return False
+      if not (tunes is None):
+         for tn in range(len(tunes)):
+	    if tunes[tn] + "-gntp." + key + ".ghep.root" not in os.listdir(path+"/"+tunes[tn]): return False
+
    return True
 
 def resultsExist( tag, date, path ):

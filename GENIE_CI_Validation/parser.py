@@ -5,10 +5,10 @@ import argparse
 def getArgs(
         require_output_path=True,
         require_run_path=True,
-        usage="./runLegacyValidation_test.py <options>"
+        usage="./composeDAGandXML.py <options>"
         ):
     parser = argparse.ArgumentParser(
-            description = "GENIE Legacy Validation @ FERMILAB",
+            description = "GENIE CI Validation @ FERMILAB",
             usage = usage
             )
     parser.add_argument(
@@ -40,6 +40,12 @@ def getArgs(
             metavar = "[comparisons tag]", default = "trunk",
             help = "default = trunk"
             )
+
+# tune(s) (optional)
+    parser.add_argument("--tunes", action = "store", dest = "tunes",
+           metavar = "['Tune1 Tune2 ...']", 
+	   help = "desired tune(s) (optional)"
+	   )
 
 # regression tests (optional)
     parser.add_argument("--regre", action = "store", dest = "regretags",

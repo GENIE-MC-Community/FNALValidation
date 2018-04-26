@@ -55,15 +55,14 @@ class Jobsub:
                           " -o " + output + \
                           " -l " + logfile + \
                           " -c " + cmd
-        else:
+	else:
 	   regre = re.sub (" ", "SPACE", regre )
 	   print >>self.dag, self.basecmd + \
                           " -i " + inputs + \
                           " -o " + output + \
                           " -l " + logfile + \
                           " -r " + regre + \
-			  " -c " + cmd \
-	   
+			  " -c " + cmd 
                       
     # print custom text to dag
     def add (self, text):
