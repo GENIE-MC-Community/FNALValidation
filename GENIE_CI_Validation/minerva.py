@@ -184,7 +184,7 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
    jobsub.add ("<serial>")
    config  = "global-minerva-cfg-" + tag + "_" + date + ".xml"
    plotfile = "genie_" + tag + "-minerva.pdf"
-   cmd = "gvld_general_comparison --global-config input/" + config + " -o " + plotfile
+   cmd = "gvld_general_comparison --no-root-output --global-config input/" + config + " -o " + plotfile
    # add the command to dag
    inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root"
    if not (tunes is None):

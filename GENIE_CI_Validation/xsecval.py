@@ -742,7 +742,7 @@ def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, regretags, r
   for comp in comparisons:
     inFile = comp + "-" + tag + "-" + date + ".xml"    
     outFile = "genie_" + tag + "_" + comparisons[comp]['outprefix'] + comp 
-    cmd = "gvld_general_comparison --global-config input/" + inFile + " -o " + outFile 
+    cmd = "gvld_general_comparison --no-root-output --global-config input/" + inFile + " -o " + outFile 
     logFile = "gvld_nu_xsec_" + comp + ".log"
     regre = None
     if not (regretags is None):
