@@ -155,29 +155,35 @@ def fillDAGPart (jobsub, tag, out, tunes):
   # common options
   inputs = "none"
   # loop over keys and generate proper command
-  for key in nuPDG.iterkeys():
-    cmd = "gmkspl -p " + nuPDG[key] + " -t " + targetPDG[key] + " -n " + nKnots + " -e " + maxEnergy \
-          + " -o " + outXML[key] + " --event-generator-list " + generatorList[key]
-    logFile = "gmkspl." + outXML[key] + ".log"
-    jobsub.addJob (inputs, out, logFile, cmd, None)
-    # same for tunes if specified
-    if not (tunes is None):
-       for tn in range(len(tunes)):
-          cmdTune = "gmkspl -p " + nuPDG[key] + " -t " + targetPDG[key] + " -n " + nKnots + " -e " + maxEnergy \
-	            + " -o " + tunes[tn] + "-" + outXML[key] + " --event-generator-list " + generatorList[key] \
-		    + " --tune " + tunes[tn]
-	  # cmdTune = cmd + " --tune " + tunes[tn]
-          logTune = tunes[tn] +  "-gmkspl." + outXML[key] + ".log"
-          jobsub.addJob ( inputs, out+"/"+tunes[tn], logTune, cmdTune, None)
+#  for key in nuPDG.iterkeys():
+#    cmd = "gmkspl -p " + nuPDG[key] + " -t " + targetPDG[key] + " -n " + nKnots + " -e " + maxEnergy \
+#          + " -o " + outXML[key] + " --event-generator-list " + generatorList[key]
+#    logFile = "gmkspl." + outXML[key] + ".log"
+#    jobsub.addJob (inputs, out, logFile, cmd, None)
+#    # same for tunes if specified
+#    if not (tunes is None):
+#       for tn in range(len(tunes)):
+#          cmdTune = "gmkspl -p " + nuPDG[key] + " -t " + targetPDG[key] + " -n " + nKnots + " -e " + maxEnergy \
+#	            + " -o " + tunes[tn] + "-" + outXML[key] + " --event-generator-list " + generatorList[key] \
+#		    + " --tune " + tunes[tn]
+#	  # cmdTune = cmd + " --tune " + tunes[tn]
+#          logTune = tunes[tn] +  "-gmkspl." + outXML[key] + ".log"
+#          jobsub.addJob ( inputs, out+"/"+tunes[tn], logTune, cmdTune, None)
   
 # possibly, for future developments...
 #
-#  for key in data_struct.iterkeys():
-#     cmd = "gmkspl -p " + data_struct[key]['projectile'] + " -t " + data_struct[key]['target'] \
-#         + " -n " + nKnots + " -e " + maxEnergy + " -o " + data_struct[key]['output']
-#     logFile = "gmkspl." + key + ".log"
-#     jobsub.addJob( inputs, out, logFile, cmd, None )
-  
+  for key in data_struct.iterkeys():
+     cmd = "gmkspl -p " + data_struct[key]['projectile'] + " -t " + data_struct[key]['target'] \
+         + " -n " + nKnots + " -e " + maxEnergy + " -o " + data_struct[key]['output']
+     logFile = "gmkspl." + key + ".log"
+     jobsub.addJob( inputs, out, logFile, cmd, None )
+     if not (tunes is None):
+        for tn in range(len(tunes)):
+           cmdTune = "gmkspl -p " + data_struct[key]['projectile'] + " -t " + data_struct[key]['target'] \
+                   + " -n " + nKnots + " -e " + maxEnergy + " -o " + data_struct[key]['output'] \
+	           + " --tune " + tunes[tn]
+           logTune = tunes[tn] + "-gmkspl." + key + ".log"
+	   jobsub.addJob( inputs, out+"/"+tunes[tn], logTune, cmdTune, None )
   # done
   jobsub.add ("</parallel>")
   
@@ -196,7 +202,7 @@ def fillDAGMerge (jobsub, tag, out, tunes):
   xmlFile = "gxspl-vN-" + tag + ".xml"  
   # merge splines job
   cmd = "gspladd -d input -o " + xmlFile
-  inputs = out + "/*.xml"
+  inputs = out + "/pgxspl*.xml"
   logFile = "gspladd.log"
   jobsub.addJob (inputs, out, logFile, cmd, None)
   # convert to root job
@@ -211,11 +217,11 @@ def fillDAGMerge (jobsub, tag, out, tunes):
         xmlTune = tunes[tn] + "-gxspl-vN-" + tag + ".xml"
 	cmdTune = "gspladd -d input -o " + xmlTune
 	logTune = tunes[tn] + "-gspladd.log"
-	jobsub.addJob( out+"/"+tunes[tn]+"/*.xml", out+"/"+tunes[tn], logTune, cmdTune, None)
+	jobsub.addJob( out+"/"+tunes[tn]+"/"+tunes[tn]+"*.xml", out+"/"+tunes[tn], logTune, cmdTune, None)
         rootTune = tunes[tn] + "-xsec-vN-" + tag + ".root"
 	logTune = tunes[tn] + "-gspl2root.log"
 	cmdTune ="gspl2root -p 12,-12,14,-14,16,-16 -t 1000010010,1000000010 -o " + rootTune + " -f input/" + xmlTune
-	jobsub.addJob( out+"/"+tunes[tn]+"/*.xml", out+"/"+tunes[tn], logTune, cmdTune, None )
+	jobsub.addJob( out+"/"+tunes[tn]+"/"+xmlTune, out+"/"+tunes[tn], logTune, cmdTune, None )
   
   # done
   jobsub.add ("</serial>")

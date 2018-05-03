@@ -76,7 +76,7 @@ def fillDAGMerge (jobsub, tag, out, tunes):
   xmlFile = "gxspl-vA-" + tag + ".xml"
   # merge splines job
   cmd = "gspladd -d input -o " + xmlFile
-  inputs = out + "/*.xml"
+  inputs = out + "/gxspl*.xml"
   logFile = "gspladd.log"
   jobsub.addJob (inputs, out, logFile, cmd, None)
   # convert to root job
@@ -91,11 +91,11 @@ def fillDAGMerge (jobsub, tag, out, tunes):
         xmlTune = tunes[tn] + "-gxspl-vA-" + tag + ".xml"
 	cmdTune = "gspladd -d input -o " + xmlTune
 	logTune = tunes[tn] + "-gspladd.log"
-	jobsub.addJob( out+"/"+tunes[tn]+"/*.xml", out+"/"+tunes[tn], logTune,cmdTune, None )
+	jobsub.addJob( out+"/"+tunes[tn]+"/"+tunes[tn]+"*.xml", out+"/"+tunes[tn], logTune,cmdTune, None )
 	rootTune = tunes[tn] + "-xsec-vA-" + tag + ".root"
 	logTune = tunes[tn] + "-gspl2root.log"
 	cmdTune = "gspl2root -p " + nuPDG + " -t " + ",".join(targets) + " -o " + rootTune + " -f input/" + xmlTune
-	jobsub.addJob( out+"/"+tunes[tn]+"/*.xml", out+"/"+tunes[tn], logTune,cmdTune, None )
+	jobsub.addJob( out+"/"+tunes[tn]+"/"+xmlTune, out+"/"+tunes[tn], logTune,cmdTune, None )
 
   # done
   jobsub.add ("</serial>")
