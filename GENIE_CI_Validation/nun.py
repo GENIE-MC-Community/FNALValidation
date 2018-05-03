@@ -17,7 +17,7 @@ data_struct = {
    'nue_p' : { 'projectile' : '12', 'target' : '01000010010', 'output' : 'pgxspl-nue_p.xml' },
    'nuebar_p' : {  'projectile' : '-12', 'target' : '01000010010', 'output' : 'pgxspl-nuebar_p.xml' },
    'numu_p' : { 'projectile' : '14', 'target' : '01000010010', 'output' : 'pgxspl-numu_p.xml' },
-   'numubar_p' : { 'projectile' : '-14', 'target' : '01000010010', 'output' : 'pgxspl-numubar_p.xmll' },
+   'numubar_p' : { 'projectile' : '-14', 'target' : '01000010010', 'output' : 'pgxspl-numubar_p.xml' },
    'nutau_p' : { 'projectile' : '16', 'target' : '01000010010', 'output' : 'pgxspl-nutau_p.xml' },
    'nutaubar_p' : { 'projectile' : '-16', 'target' : '01000010010', 'output' : 'pgxspl-nutaubar_p.xml' }    
 }
