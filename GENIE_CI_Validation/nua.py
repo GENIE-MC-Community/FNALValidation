@@ -94,7 +94,7 @@ def fillDAGMerge (jobsub, tag, out, tunes):
 	jobsub.addJob( out+"/"+tunes[tn]+"/"+tunes[tn]+"*.xml", out+"/"+tunes[tn], logTune,cmdTune, None )
 	rootTune = tunes[tn] + "-xsec-vA-" + tag + ".root"
 	logTune = tunes[tn] + "-gspl2root.log"
-	cmdTune = "gspl2root -p " + nuPDG + " -t " + ",".join(targets) + " -o " + rootTune + " -f input/" + xmlTune
+	cmdTune = "gspl2root -p " + nuPDG + " -t " + ",".join(targets) + " -o " + rootTune + " -f input/" + xmlTune + " --tune " + tunes[tn]
 	jobsub.addJob( out+"/"+tunes[tn]+"/"+xmlTune, out+"/"+tunes[tn], logTune,cmdTune, None )
 
   # done

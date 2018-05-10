@@ -8,18 +8,18 @@ nKnots    = "200" # no. of knots for gmkspl
 maxEnergy = "500" # maximum energy for gmkspl
 
 data_struct = {
-   'nue_n' : { 'projectile' : '12', 'target' : '01000000010', 'output' : 'pgxspl-nue_n.xml', },
-   'nuebar_n' : {  'projectile' : '-12', 'target' : '01000000010', 'output' : 'pgxspl-nuebar_n.xml' },
-   'numu_n' : { 'projectile' : '14', 'target' : '01000000010', 'output' : 'pgxspl-numu_n.xml' },
-   'numubar_n' : { 'projectile' : '-14', 'target' : '01000000010', 'output' : 'pgxspl-numubar_n.xml' },
-   'nutau_n' : { 'projectile' : '16', 'target' : '01000000010', 'output' : 'pgxspl-nutau_n.xml' },
+   'nue_n' : { 'projectile' : '12', 'target' : '1000000010', 'output' : 'pgxspl-nue_n.xml', },
+   'nuebar_n' : {  'projectile' : '-12', 'target' : '1000000010', 'output' : 'pgxspl-nuebar_n.xml' },
+   'numu_n' : { 'projectile' : '14', 'target' : '1000000010', 'output' : 'pgxspl-numu_n.xml' },
+   'numubar_n' : { 'projectile' : '-14', 'target' : '1000000010', 'output' : 'pgxspl-numubar_n.xml' },
+   'nutau_n' : { 'projectile' : '16', 'target' : '1000000010', 'output' : 'pgxspl-nutau_n.xml' },
    'nutaubar_n' : { 'projectile' : '-16', 'target' : '01000000010', 'output' : 'pgxspl-nutaubar_n.xml' },
-   'nue_p' : { 'projectile' : '12', 'target' : '01000010010', 'output' : 'pgxspl-nue_p.xml' },
-   'nuebar_p' : {  'projectile' : '-12', 'target' : '01000010010', 'output' : 'pgxspl-nuebar_p.xml' },
-   'numu_p' : { 'projectile' : '14', 'target' : '01000010010', 'output' : 'pgxspl-numu_p.xml' },
-   'numubar_p' : { 'projectile' : '-14', 'target' : '01000010010', 'output' : 'pgxspl-numubar_p.xml' },
-   'nutau_p' : { 'projectile' : '16', 'target' : '01000010010', 'output' : 'pgxspl-nutau_p.xml' },
-   'nutaubar_p' : { 'projectile' : '-16', 'target' : '01000010010', 'output' : 'pgxspl-nutaubar_p.xml' }    
+   'nue_p' : { 'projectile' : '12', 'target' : '1000010010', 'output' : 'pgxspl-nue_p.xml' },
+   'nuebar_p' : {  'projectile' : '-12', 'target' : '1000010010', 'output' : 'pgxspl-nuebar_p.xml' },
+   'numu_p' : { 'projectile' : '14', 'target' : '1000010010', 'output' : 'pgxspl-numu_p.xml' },
+   'numubar_p' : { 'projectile' : '-14', 'target' : '1000010010', 'output' : 'pgxspl-numubar_p.xml' },
+   'nutau_p' : { 'projectile' : '16', 'target' : '1000010010', 'output' : 'pgxspl-nutau_p.xml' },
+   'nutaubar_p' : { 'projectile' : '-16', 'target' : '1000010010', 'output' : 'pgxspl-nutaubar_p.xml' }    
 }
 
 # neutrino pdg codes for given job 
@@ -220,7 +220,7 @@ def fillDAGMerge (jobsub, tag, out, tunes):
 	jobsub.addJob( out+"/"+tunes[tn]+"/"+tunes[tn]+"*.xml", out+"/"+tunes[tn], logTune, cmdTune, None)
         rootTune = tunes[tn] + "-xsec-vN-" + tag + ".root"
 	logTune = tunes[tn] + "-gspl2root.log"
-	cmdTune ="gspl2root -p 12,-12,14,-14,16,-16 -t 1000010010,1000000010 -o " + rootTune + " -f input/" + xmlTune
+	cmdTune ="gspl2root -p 12,-12,14,-14,16,-16 -t 1000010010,1000000010 -o " + rootTune + " -f input/" + xmlTune + " --tune " + tunes[tn]
 	jobsub.addJob( out+"/"+tunes[tn]+"/"+xmlTune, out+"/"+tunes[tn], logTune, cmdTune, None )
   
   # done
