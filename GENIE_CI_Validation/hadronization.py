@@ -52,7 +52,9 @@ def fillDAG_GHEP (jobsub, tag, xsec_n_path, out, tunes):
     # same for tunes if specified
     if not (tunes is None):
        for tn in range(len(tunes)):
-          cmdTune = "gevgen " + options + " --tune " + tunes[tn] + " -p " + nuPDG[key] + " -t " + targetPDG[key] + " -r " + key + \
+	  optTune = " -n " + nEvents + " -e " + energy + " -f " + flux + " --seed " + mcseed + \
+              " --cross-sections input/" + tunes[tn] + "-" + inputFile + " --event-generator-list " + generatorList
+	  cmdTune = "gevgen " + optTune + " --tune " + tunes[tn] + " -p " + nuPDG[key] + " -t " + targetPDG[key] + " -r " + key + \
 	             " -o " + tunes[tn] + "-gntp." + key + ".ghep.root"
 	  jobsub.addJob( xsec_n_path+"/"+tunes[tn]+"/"+tunes[tn]+"-"+inputFile, out+"/"+tunes[tn], tunes[tn]+"-"+logFile, cmdTune, None )
 
