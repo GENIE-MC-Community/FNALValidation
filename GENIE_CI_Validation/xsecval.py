@@ -233,11 +233,12 @@ comparisons = {
 			       'outprefix' : 'c03d10_'
 			     },
 # numu CC 1pi 
-   'cmp_numuCCppi+_all' :   { 'datafiles' : ['numuCCppi+_all.xml'], 
-                              'dataclass' : 'INXSDataSet',
-			      'mcpredictions' : ['INXSPredExclPion'],
-			      'outprefix' : 'c05c01_'
-			    },
+# FIXME !!! ppi+_all hangs - something is not properly configured (as of May 15, 2018)
+#   'cmp_numuCCppi+_all' :   { 'datafiles' : ['numuCCppi+_all.xml'], 
+#                              'dataclass' : 'INXSDataSet',
+#			      'mcpredictions' : ['INXSPredExclPion'],
+#			      'outprefix' : 'c05c01_'
+#			    },
    'cmp_numuCCppi+_ANL_12FT,0' :   { 'datafiles' : ['numuCCppi+_ANL_12FT,0.xml'],
                                      'dataclass' : 'INXSDataSet',
 			             'mcpredictions' : ['INXSPredExclPion'],

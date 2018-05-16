@@ -188,10 +188,10 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
    plotfile = "genie_" + tag + "-minerva.pdf"
    cmd = "gvld_general_comparison --no-root-output --global-config input/" + config + " -o " + plotfile
    # add the command to dag
-   inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root"
+   inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root "
    if not (tunes is None):
       for tn in range(len(tunes)):
-         inputs = " " + inputs + eventdir + "/" + tunes[tn] + "/*.ghep.root" 
+         inputs = " " + inputs + eventdir + "/" + tunes[tn] + "/*.ghep.root " 
    logfile = "gvld_general_comparison.log"
    regre = None
    if not (regretags is None):
