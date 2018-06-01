@@ -769,6 +769,10 @@ def isDoneGST (path):
   return True
   
 def isDoneData (tag, date, path):
-  # check if given path contains all plots
-  if "genie_" + tag + "-" + date + "-world_nu_xsec_data_comp-all-withref.ps" not in os.listdir (path): return False
+
+  # check if given path contains all plots  
+  for comp in comparisons:
+     outFile = "genie_" + tag + "_" + comparisons[comp]['outprefix'] + comp + ".pdf"
+     if outFile not in os.listdir (path): return False
+  
   return True

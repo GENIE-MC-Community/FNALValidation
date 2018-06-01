@@ -19,6 +19,7 @@ def prepare ( path ):
   paths['xsecval'] = path + "/events/xsec_validation"
   paths['hadron']  = path + "/events/hadronization"
   paths['minerva'] = path + "/events/minerva"
+  paths['t2k'] = path + "/events/t2k"
 
   # reports
   paths['reports'] = path + "/reports"
@@ -27,6 +28,7 @@ def prepare ( path ):
   paths['xseclog'] = path + "/reports/xsec_validation"
   paths['hadrep']  = path + "/reports/hadronization_test"
   paths['minervarep'] = path + "/reports/minerva"
+  paths['t2krep'] = path + "/reports/t2k"
 
   # create all directiories
   for p in paths.values():

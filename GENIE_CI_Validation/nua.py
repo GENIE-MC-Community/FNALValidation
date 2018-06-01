@@ -7,7 +7,7 @@ import re, os
 nKnots    = "200" # no. of knots for gmkspl
 maxEnergy = "150"  # maximum energy for gmkspl
 
-nuPDG = "12,-12,14,-14" # pdg of neutrinos to process
+nuPDG = [ '12', '-12', '14', '-14' ]
 
 # targets to process
 targets = ['1000010010',  # H1
@@ -39,22 +39,23 @@ def fillDAGPart (jobsub, tag, xsec_n_path, out, tunes):
 
   # common options
   inputFile = "gxspl-vN-" + tag + ".xml"
-  inputs = xsec_n_path + "/*.xml"
+  inputs = xsec_n_path + "/" + inputFile
   options = " --input-cross-sections input/" + inputFile
-  # loop over targets and generate proper command
-  for t in targets:
-    outputFile = "gxspl_" + t + ".xml"
-    cmd = "gmkspl -p " + nuPDG + " -t " + t + " -n " + nKnots + " -e " + maxEnergy + options + \
+  # loop over nuPDG's and targets and generate proper command
+  for nu in nuPDG:
+   for t in targets:
+    outputFile = "gxspl_" + nu + "_" + t + ".xml"
+    cmd = "gmkspl -p " + nu + " -t " + t + " -n " + nKnots + " -e " + maxEnergy + options + \
           " --output-cross-sections " + outputFile
-    logFile = "gxspl_" + t + ".xml.log"
+    logFile = "gxspl_" + nu + "_" + t + ".xml.log"
     jobsub.addJob (inputs, out, logFile, cmd, None)
     # same for tunes if specified
     if not (tunes is None):
        for tn in range(len(tunes)):
-          inputsTune = xsec_n_path + "/" + tunes[tn] + "/*.xml"
+	  inputsTune = xsec_n_path + "/" + tunes[tn] + "/" + tunes[tn] + "-" + inputFile
 	  optionsTune = " --input-cross-sections input/" + tunes[tn] + "-" + inputFile
 	  outputTune = tunes[tn] + "-" + outputFile
-	  cmdTune = "gmkspl -p " + nuPDG + " -t " + t + " -n " + nKnots + " -e " + maxEnergy + optionsTune + \
+	  cmdTune = "gmkspl -p " + nu + " -t " + t + " -n " + nKnots + " -e " + maxEnergy + optionsTune + \
 		    " --tune " + tunes[tn] + " --output-cross-sections " + outputTune
 	  jobsub.addJob( inputsTune, out+"/"+tunes[tn], tunes[tn]+"-"+logFile, cmdTune, None )
           
@@ -81,7 +82,7 @@ def fillDAGMerge (jobsub, tag, out, tunes):
   jobsub.addJob (inputs, out, logFile, cmd, None)
   # convert to root job
   rootFile = "xsec-vA-" + tag + ".root"
-  cmd = "gspl2root -p " + nuPDG + " -t " + ",".join(targets) + " -o " + rootFile + " -f input/" + xmlFile
+  cmd = "gspl2root -p " + ",".join(nuPDG) + " -t " + ",".join(targets) + " -o " + rootFile + " -f input/" + xmlFile
   inputs = out + "/" + xmlFile
   logFile = "gspl2root.log"
   jobsub.addJob (inputs, out, logFile, cmd, None)
@@ -94,7 +95,7 @@ def fillDAGMerge (jobsub, tag, out, tunes):
 	jobsub.addJob( out+"/"+tunes[tn]+"/"+tunes[tn]+"*.xml", out+"/"+tunes[tn], logTune,cmdTune, None )
 	rootTune = tunes[tn] + "-xsec-vA-" + tag + ".root"
 	logTune = tunes[tn] + "-gspl2root.log"
-	cmdTune = "gspl2root -p " + nuPDG + " -t " + ",".join(targets) + " -o " + rootTune + " -f input/" + xmlTune + " --tune " + tunes[tn]
+	cmdTune = "gspl2root -p " + ",".join(nuPDG) + " -t " + ",".join(targets) + " -o " + rootTune + " -f input/" + xmlTune + " --tune " + tunes[tn]
 	jobsub.addJob( out+"/"+tunes[tn]+"/"+xmlTune, out+"/"+tunes[tn], logTune,cmdTune, None )
 
   # done
@@ -103,11 +104,12 @@ def fillDAGMerge (jobsub, tag, out, tunes):
 def isDonePart (tag, path, tunes):
 
   # check if given path contains all splines
-  for t in targets:
-    if "gxspl_" + t + ".xml" not in os.listdir (path): return False
+  for nu in nuPDG:
+   for t in targets:
+    if "gxspl_" + nu + "_" + t + ".xml" not in os.listdir (path): return False
     if not (tunes is None):
        for tn in range(len(tunes)):
-          if tunes[th] +"-gxspl_" + t + ".xml" not in os.listdir (path+"/"+tunes[tn]): return False 
+          if tunes[th] +"-gxspl_" + nu + "_" + t + ".xml" not in os.listdir (path+"/"+tunes[tn]): return False 
   
   return True
 

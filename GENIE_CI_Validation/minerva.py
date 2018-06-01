@@ -138,7 +138,7 @@ def createCmpConfigs( tag, date, reportdir, tunes, regretags ):
       xml = open( xmlfile, 'w' )
       print >>xml, '<?xml version="1.0" encoding="ISO-8859-1"?>'
       print >>xml, '<genie_simulation_outputs>'
-      print >>xml, '\t<model name="GENIE_' + tag + ":default:" + data_struct[key]['releaselabel'] + '">'
+      print >>xml, '\t<model name="GENIE_' + tag + ':default:' + data_struct[key]['releaselabel'] + '">'
       print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
       print >>xml, '\t</model>'
       # tunes if specied
@@ -205,7 +205,7 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
 def eventFilesExist( path, tunes ):
 
    for key in data_struct.iterkeys():
-      if "gntp." + key + ".ghep.root" not in os.listdir(path): return False
+      if "gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root" not in os.listdir(path): return False
       if not (tunes is None):
          for tn in range(len(tunes)):
 	    if tunes[tn] + "-gntp." + key + ".ghep.root" not in os.listdir(path+"/"+tunes[tn]): return False
