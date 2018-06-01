@@ -22,7 +22,7 @@ data_struct = {
    'numucc0pi' : { 'projectile' : '14', 'energy' : '0,20',
                    'flux' : 'data/measurements/vA/t2k/t2k_nd280_numucc_2013/data_release.root,flux_numu',
 		   'releaselabel' : 't2k_nd280_numu_2015',
-		   'datafile' : ['data/measurements/vA/t2k/t2k_nd280_numucc0pi_2015.xml'],
+		   'datafiles' : ['data/measurements/vA/t2k/t2k_nd280_numucc0pi_2015.xml'],
 		   'dataclass' : 'T2KND280NuMuCC0pi2015Data',
 		   'mcpredictions' : ['T2KND280NuMuCC0pi2015Data']
 		 }
@@ -104,19 +104,23 @@ def createCmpConfigs( tag, date, reportdir, tunes, regretags ):
       print >>xml, '<genie_simulation_outputs>'
       print >>xml, '\t<model name="' + tag + '-' + date + ':default:' + data_struct[key]['releaselabel'] + '">'
       print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+      print >>xml, '\t\t<xsec_file> input/xsec-vA-' + tag + '.root </xsec_file>'
       print >>xml, '\t</model>'
       #tunes if specified
       if not (tunes is None):
          for tn in range(len(tunes)):
 	    print >>xml, '\t<model name="' + tag + '-' + date + ':' + tunes[tn] + ':' + data_struct[key]['releaselabel'] + '">'
 	    print >>xml, '\t\t<evt_file format="ghep"> input/' + tunes[tn] + '-gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+            print >>xml, '\t\t<xsec_file> input/' + tunes[tn] + '-xsec-vA-' + tag + '.root </xsec_file>'
 	    print >>xml, '\t</model>'
       # regression if specified
-      if not (regretags is None):
-         for rt in range(len(regretags)):
-	    print >>xml, '\t<model name="' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
-	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
-	    print >>xml, '\t</model>'
+# FIXME !!! maybe will release later since no results from earlier releases are kept
+#      if not (regretags is None):
+#         for rt in range(len(regretags)):
+#	    print >>xml, '\t<model name="' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
+#	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+#            print >>xml, '\t\t<xsec_file> input/regre/'  + regretags[rt] + '/xsec-vA-' + rversion + '.root </xsec_file>'
+#	    print >>xml, '\t</model>'
       print >>xml, '</genie_simulation_outputs>'
       xml.close()   
 
@@ -137,10 +141,11 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
       inFile = "cmp-" + data_struct[key]['releaselabel'] + "-" + tag + "_" + date + ".xml"
       outFile = "genie_" + tag + "_" + data_struct[key]['releaselabel']
       cmd = "gvld_general_comparison --no-root-output --global-config input/" + inFile + " -o " + outFile
-      inputs = reportdir + "/*.xml " + eventdir + "/*.ghep.root "
+      inputs = reportdir + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + eventdir + "/*.ghep.root "
       if not (tunes is None):
          for tn in range(len(tunes)):
-	    inputs = " " + inputs + eventdir + "/" + tunes[tn] + "/*.ghep.root "
+	    inputs = " " + inputs + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vA-" + tag + ".root " \
+	           + eventdir + "/" + tunes[tn] + "/*.ghep.root "
       regre = None
       #
       # RELEASE THIS LATER since there're NO REGRESSION outputs for T2K so far
@@ -167,3 +172,9 @@ def eventFilesExist( path, tunes ):
 
 def resultsExist( tag, date, path ):
 
+  # check if given path contains all plots  
+   for key in data_struct.iterkeys():
+      outFile = "genie_" + tag + "_" + data_struct[key]['releaselabel'] + ".pdf"
+      if outFile not in os.listdir (path): return False
+   
+   return True

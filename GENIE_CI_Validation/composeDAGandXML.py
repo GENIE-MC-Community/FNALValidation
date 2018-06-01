@@ -10,8 +10,8 @@ import nun, nua
 import standard
 # old-style validation
 import hadronization
-# new-style validation (minerva, etc.)
-import xsecval, minerva
+# new-style validation (sec, minerva, t2k, etc.)
+import xsecval, minerva, t2k
 # general
 import os, datetime
 
@@ -101,3 +101,5 @@ if __name__ == "__main__":
   # ---> hadronization.fillDAG ( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
   # MINERvA test
   # ---> minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
+  # T2K
+  # t2k.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
