@@ -114,13 +114,12 @@ def createCmpConfigs( tag, date, reportdir, tunes, regretags ):
             print >>xml, '\t\t<xsec_file> input/' + tunes[tn] + '-xsec-vA-' + tag + '.root </xsec_file>'
 	    print >>xml, '\t</model>'
       # regression if specified
-# FIXME !!! maybe will release later since no results from earlier releases are kept
-#      if not (regretags is None):
-#         for rt in range(len(regretags)):
-#	    print >>xml, '\t<model name="' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
-#	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
-#            print >>xml, '\t\t<xsec_file> input/regre/'  + regretags[rt] + '/xsec-vA-' + rversion + '.root </xsec_file>'
-#	    print >>xml, '\t</model>'
+      if not (regretags is None):
+         for rt in range(len(regretags)):
+	    print >>xml, '\t<model name="' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
+	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+            print >>xml, '\t\t<xsec_file> input/regre/'  + regretags[rt] + '/xsec-vA-' + rversion + '.root </xsec_file>'
+	    print >>xml, '\t</model>'
       print >>xml, '</genie_simulation_outputs>'
       xml.close()   
 
@@ -147,13 +146,10 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
 	    inputs = " " + inputs + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vA-" + tag + ".root " \
 	           + eventdir + "/" + tunes[tn] + "/*.ghep.root "
       regre = None
-      #
-      # RELEASE THIS LATER since there're NO REGRESSION outputs for T2K so far
-      #
-      #if not (regretags is None):
-      #   regre = ""
-      #   for rt in range(len(regretags)):
-      #      regre = regre + regredir + "/" + regretags[rt] + "/events/t2k/*.ghep.root "
+      if not (regretags is None):
+         regre = ""
+         for rt in range(len(regretags)):
+            regre = regre + regredir + "/" + regretags[rt] + "/events/t2k/*.ghep.root "
       logfile = data_struct[key]['releaselabel'] + ".log"
       jobsub.addJob ( inputs, reportdir, logfile, cmd, regre )
 

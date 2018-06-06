@@ -102,4 +102,7 @@ if __name__ == "__main__":
   # MINERvA test
   minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
   # T2K
-  # t2k.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
+  #
+  # NOTE (JVY): NO regression test so far since we don't have anything for T2k from GENIE v2_x_y
+  #
+  t2k.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, None, None )

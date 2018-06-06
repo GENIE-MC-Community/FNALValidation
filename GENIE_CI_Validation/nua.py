@@ -4,8 +4,9 @@ import msg
 import outputPaths
 import re, os
 
-# NOTE (JVY): as of 6/1/2018, reduce number of knots from 200 to 100
-nKnots    = "100" # no. of knots for gmkspl
+# NOTE-1 (JVY): as of 6/1/2018, reduce number of knots from 200 to 100
+# NOTE-2 (JVY): as of 6/6/2018, resume 200 knots
+nKnots    = "200" # no. of knots for gmkspl
 maxEnergy = "150"  # maximum energy for gmkspl
 
 nuPDG = [ '12', '-12', '14', '-14' ]
