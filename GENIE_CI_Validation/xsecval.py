@@ -1,4 +1,5 @@
 import msg
+import outputPaths
 import os
 
 nuPDG = {
@@ -627,22 +628,28 @@ comparisons = {
 }
 
 
-def fillDAG (jobsub, tag, date, paths, regretags, regredir ):
-  fillDAG_GHEP (jobsub, tag, paths['xsec_A'], paths['xsecval'])
-  fillDAG_GST (jobsub, paths['xsecval'])
-  createFileList (tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'], regretags )
+def fillDAG (jobsub, tag, date, paths, tunes, regretags, regredir ):
+  outputPaths.expand( paths['xsecval'], tunes )
+  fillDAG_GHEP ( jobsub, tag, paths['xsec_A'], paths['xsecval'], tunes )
+  # ---> NO need ---> fillDAG_GST ( jobsub, paths['xsecval'] )
+  createFileList (tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'], tunes, regretags )
+  # NOTE: no need to deal with tunes and/or regre in createCmpConfig 
+  #      since it's all reflected on fileList which is created in createFileList
   createCmpConfig (tag, date, paths['xseclog'] ) 
-  fillDAG_cmp (jobsub, tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'], regretags, regredir ) 
+  fillDAG_cmp (jobsub, tag, date, paths['xsec_A'], paths['xsecval'], paths['xseclog'], tunes, regretags, regredir ) 
 
-def fillDAG_GHEP (jobsub, tag, xsec_a_path, out):
+def fillDAG_GHEP ( jobsub, tag, xsec_a_path, out, tunes ):
   # check if job is done already
-  if isDoneGHEP (out):
+  if isDoneGHEP (out,tunes):
     msg.warning ("xsec validation ghep files found in " + out + " ... " + msg.BOLD + "skipping xsecval:fillDAG_GHEP\n", 1)
     return
+
   #not done, add jobs to dag
   msg.info ("\tAdding xsec validation (ghep) jobs\n")
+
   # in parallel mode
   jobsub.add ("<parallel>")
+
   # common configuration
   inputFile = "gxspl-vA-" + tag + ".xml"
   options   = " -n " + nEvents + " -e " + energy + " -f " + flux + " --seed " + mcseed + \
@@ -651,7 +658,17 @@ def fillDAG_GHEP (jobsub, tag, xsec_a_path, out):
   for key in nuPDG.iterkeys():
     cmd = "gevgen " + options + " -p " + nuPDG[key] + " -t " + targetPDG[key] + " -r " + key
     logFile = "gevgen_" + key + ".log"
-    jobsub.addJob (xsec_a_path + "/" + inputFile, out, logFile, cmd, None)
+    jobsub.addJob (xsec_a_path+"/"+inputFile, out, logFile, cmd, None)
+    # same for tune(s) if specified
+    if not ( tunes is None ):
+       for tn in range(len(tunes)):
+          inputXSec = tunes[tn] + "-" + inputFile
+	  optTune = " -n " + nEvents + " -e " + energy + " -f " + flux + " --seed " + mcseed + \
+                    " --cross-sections input/" + inputXSec + " --event-generator-list " + generatorList
+          cmdTune = "gevgen " + optTune + " --tune " + tunes[tn] + " -p " + nuPDG[key] + " -t " + targetPDG[key] + \
+	            " -o " + tunes[tn] + "-gntp." + key + ".ghep.root"
+          jobsub.addJob( xsec_a_path+"/"+tunes[tn]+"/"+inputXSec, out+"/"+tunes[tn], tunes[tn]+"-"+logFile, cmdTune, None ) 
+
   # done
   jobsub.add ("</parallel>")
 
@@ -673,7 +690,7 @@ def fillDAG_GST (jobsub, out):
   # done
   jobsub.add ("</parallel>")
 
-def createFileList (tag, date, xsec_a_path, outEvent, outRep, regretags):
+def createFileList (tag, date, xsec_a_path, outEvent, outRep, tunes, regretags):
   
   # create xml file with the file list in the format as src/scripts/production/misc/make_genie_sim_file_list.pl
   xmlFile = outRep + "/file_list-" + tag + "-" + date + ".xml"
@@ -687,6 +704,14 @@ def createFileList (tag, date, xsec_a_path, outEvent, outRep, regretags):
     print >>xml, '\t\t<evt_file format="ghep"> input/gntp.' + key + '.ghep.root </evt_file>'
   print >>xml, '\t\t<xsec_file> input/xsec-vA-' + tag + '.root </xsec_file>'
   print >>xml, '\t</model>'
+  # same for tunes if specified
+  if not (tunes is None):
+     for tn in range(len(tunes)):
+        print >>xml, '\t<model name="' + tag + '-' + date + ':' + tunes[tn] + ':world' '">'
+        for key in nuPDG.iterkeys():
+           print >>xml, '\t\t<evt_file format="ghep"> input/' + tunes[tn] + '-gntp.' + key + '.ghep.root </evt_file>'
+        print >>xml, '\t\t<xsec_file> input/' + tunes[tn] + '-xsec-vA-' + tag + '.root </xsec_file>'
+        print  >>xml, '\t</model>'  
   if not (regretags is None):
      for rt in range(len(regretags)):
         rversion, rdate = regretags[rt].split("/") 
@@ -729,15 +754,16 @@ def createCmpConfig( tag, date, reportdir ):
       print >>gxml, '</config>'
       gxml.close()
       
-#   def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, outRepSng):
-def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, regretags, regredir):
+def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, tunes, regretags, regredir):
   # check if job is done already
   if isDoneData (tag, date, outRep):
     msg.warning ("xsec validation plots found in " + outRep + " ... " + msg.BOLD + "skipping xsecval:fillDAG_data\n", 1)
     return
+
   # not done, add jobs to dag
   msg.info ("\tAdding xsec validation (data) jobs\n")    
   inputs = outRep + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + outEvents + "/*.ghep.root"
+
   # in parallel mode
   jobsub.add ("<parallel>")
   for comp in comparisons:
@@ -745,6 +771,12 @@ def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, regretags, r
     outFile = "genie_" + tag + "_" + comparisons[comp]['outprefix'] + comp 
     cmd = "gvld_general_comparison --no-root-output --global-config input/" + inFile + " -o " + outFile 
     logFile = "gvld_nu_xsec_" + comp + ".log"
+    # tunes if requested
+    if not ( tunes is None):
+       for tn in range(len(tunes)):
+          inputs = inputs + " " + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vN-" + tag + ".root " + \
+	           outEvents + "/" + tunes[tn] + "/*.ghep.root"
+    # regression test if requested
     regre = None
     if not (regretags is None):
        regre = ""
@@ -753,13 +785,18 @@ def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, regretags, r
 	  regre = regre + regredir + "/" + regretags[rt] + "/xsec/nuA/xsec-vA-" + rversion + ".root " 
 	  regre = regre + regredir + "/" + regretags[rt] + "/events/xsec_validation/*.ghep.root " 
     jobsub.addJob (inputs, outRep, logFile, cmd, regre)
+
   # done
   jobsub.add ("</parallel>")
 
-def isDoneGHEP (path):
+def isDoneGHEP (path,tunes):
   # check if given path contains all ghep files
   for key in nuPDG.iterkeys():
     if "gntp." + key + ".ghep.root" not in os.listdir (path): return False
+    if not (tunes is None):
+       for tn in range(len(tunes)):
+          if tunes[tn] + "-gntp." + key + ".ghep.root" not in os.listdir (path+"/"+tunes[tn]): return False
+    
   return True
   
 def isDoneGST (path):

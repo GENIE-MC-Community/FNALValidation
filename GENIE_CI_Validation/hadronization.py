@@ -25,7 +25,7 @@ flux = "1/x"
 def fillDAG ( jobsub, tag, date, paths, tunes, regretags, regredir ):
   outputPaths.expand( paths['hadron'], tunes )
   fillDAG_GHEP (jobsub, tag, paths['xsec_N'], paths['hadron'], tunes)
-  fillDAG_GST (jobsub, paths['hadron'], tunes)
+  # ---> No need ---> fillDAG_GST (jobsub, paths['hadron'], tunes)
   createFileList ( tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], tunes, regretags )
   fillDAG_data ( jobsub, tag, date, paths['xsec_N'], paths['hadron'], paths['hadrep'], tunes, regretags, regredir )
 

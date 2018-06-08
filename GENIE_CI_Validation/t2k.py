@@ -22,9 +22,9 @@ data_struct = {
    'numucc0pi' : { 'projectile' : '14', 'energy' : '0,20',
                    'flux' : 'data/measurements/vA/t2k/t2k_nd280_numucc_2013/data_release.root,flux_numu',
 		   'releaselabel' : 't2k_nd280_numu_2015',
-		   'datafiles' : ['data/measurements/vA/t2k/t2k_nd280_numucc0pi_2015.xml'],
+		   'datafiles' : ['t2k_nd280_numucc0pi_2015.xml'], # no need for leading 'data/measurements/vA/t2k/'
 		   'dataclass' : 'T2KND280NuMuCC0pi2015Data',
-		   'mcpredictions' : ['T2KND280NuMuCC0pi2015Data']
+		   'mcpredictions' : ['T2KND280NuMuCC0pi2015Prediction']
 		 }
 }
 

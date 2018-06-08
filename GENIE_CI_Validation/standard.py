@@ -122,7 +122,7 @@ generatorList = {
 
 def fillDAG (jobsub, tag, paths, regretags=None, regredir=None):
   fillDAG_GHEP (jobsub, tag, paths['xsec_A'], paths['mctest'])
-  fillDAG_GST (jobsub, paths['mctest'])
+  # --> NO need --> fillDAG_GST (jobsub, paths['mctest'])
   fillDAG_sanity (jobsub, paths['mctest'], paths['sanity'])
   
 def fillDAG_GHEP (jobsub, tag, xsec_a_path, out):
