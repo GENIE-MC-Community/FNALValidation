@@ -762,7 +762,20 @@ def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, tunes, regre
 
   # not done, add jobs to dag
   msg.info ("\tAdding xsec validation (data) jobs\n")    
-  inputs = outRep + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + outEvents + "/*.ghep.root"
+
+  inputs = outRep + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + outEvents + "/*.ghep.root "
+  if not ( tunes is None):
+     for tn in range(len(tunes)):
+        inputs = inputs + " " + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vA-" + tag + ".root " + \
+	         outEvents + "/" + tunes[tn] + "/*.ghep.root"
+  # regression test if requested
+  regre = None
+  if not (regretags is None):
+     regre = ""
+     for rt in range(len(regretags)):
+        rversion, rdate = regretags[rt].split("/")
+	regre = regre + regredir + "/" + regretags[rt] + "/xsec/nuA/xsec-vA-" + rversion + ".root " 
+	regre = regre + regredir + "/" + regretags[rt] + "/events/xsec_validation/*.ghep.root " 
 
   # in parallel mode
   jobsub.add ("<parallel>")
@@ -771,19 +784,6 @@ def fillDAG_cmp (jobsub, tag, date, xsec_a_path, outEvents, outRep, tunes, regre
     outFile = "genie_" + tag + "_" + comparisons[comp]['outprefix'] + comp 
     cmd = "gvld_general_comparison --no-root-output --global-config input/" + inFile + " -o " + outFile 
     logFile = "gvld_nu_xsec_" + comp + ".log"
-    # tunes if requested
-    if not ( tunes is None):
-       for tn in range(len(tunes)):
-          inputs = inputs + " " + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vN-" + tag + ".root " + \
-	           outEvents + "/" + tunes[tn] + "/*.ghep.root"
-    # regression test if requested
-    regre = None
-    if not (regretags is None):
-       regre = ""
-       for rt in range(len(regretags)):
-          rversion, rdate = regretags[rt].split("/")
-	  regre = regre + regredir + "/" + regretags[rt] + "/xsec/nuA/xsec-vA-" + rversion + ".root " 
-	  regre = regre + regredir + "/" + regretags[rt] + "/events/xsec_validation/*.ghep.root " 
     jobsub.addJob (inputs, outRep, logFile, cmd, regre)
 
   # done

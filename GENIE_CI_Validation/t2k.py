@@ -136,20 +136,31 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
    # in serial mode
    jobsub.add ("<parallel>")
 
+   inputs = reportdir + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + eventdir + "/*.ghep.root "
+   if not (tunes is None):
+      for tn in range(len(tunes)):
+	 inputs = " " + inputs + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vA-" + tag + ".root " \
+	           + eventdir + "/" + tunes[tn] + "/*.ghep.root "
+   regre = None
+   if not (regretags is None):
+      regre = ""
+      for rt in range(len(regretags)):
+         regre = regre + regredir + "/" + regretags[rt] + "/events/t2k/*.ghep.root "
+
    for key in data_struct.iterkeys():
       inFile = "cmp-" + data_struct[key]['releaselabel'] + "-" + tag + "_" + date + ".xml"
       outFile = "genie_" + tag + "_" + data_struct[key]['releaselabel']
       cmd = "gvld_general_comparison --no-root-output --global-config input/" + inFile + " -o " + outFile
-      inputs = reportdir + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + eventdir + "/*.ghep.root "
-      if not (tunes is None):
-         for tn in range(len(tunes)):
-	    inputs = " " + inputs + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vA-" + tag + ".root " \
-	           + eventdir + "/" + tunes[tn] + "/*.ghep.root "
-      regre = None
-      if not (regretags is None):
-         regre = ""
-         for rt in range(len(regretags)):
-            regre = regre + regredir + "/" + regretags[rt] + "/events/t2k/*.ghep.root "
+#      inputs = reportdir + "/*.xml " + xsec_a_path + "/xsec-vA-" + tag + ".root " + eventdir + "/*.ghep.root "
+#      if not (tunes is None):
+#         for tn in range(len(tunes)):
+#	    inputs = " " + inputs + xsec_a_path + "/" + tunes[tn] + "/" + tunes[tn] + "-xsec-vA-" + tag + ".root " \
+#	           + eventdir + "/" + tunes[tn] + "/*.ghep.root "
+#      regre = None
+#      if not (regretags is None):
+#         regre = ""
+#         for rt in range(len(regretags)):
+#            regre = regre + regredir + "/" + regretags[rt] + "/events/t2k/*.ghep.root "
       logfile = data_struct[key]['releaselabel'] + ".log"
       jobsub.addJob ( inputs, reportdir, logfile, cmd, regre )
 

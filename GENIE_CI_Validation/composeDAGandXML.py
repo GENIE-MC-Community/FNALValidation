@@ -94,13 +94,13 @@ if __name__ == "__main__":
   # nucleus cross sections
   nua.fillDAG ( jobsub, args.tag, args.paths, args.tunes )
   # standard mc sanity check (events scan)
-  # ---> standard.fillDAG( jobsub, args.tag, args.paths ) # NO TUNES assumed so far !!!
+  standard.fillDAG( jobsub, args.tag, args.paths ) # NO TUNES assumed so far !!!
   # xsec validation
   xsecval.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir ) 
   # hadronization test
-  # ---> hadronization.fillDAG ( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
+  hadronization.fillDAG ( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
   # MINERvA test
-  # ---> minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
+  minerva.fillDAG( jobsub, args.tag, args.build_date, args.paths, args.tunes, args.regretags, args.regredir )
   # T2K
   #
   # NOTE (JVY): NO regression test so far since we don't have anything for T2k from GENIE v2_x_y
