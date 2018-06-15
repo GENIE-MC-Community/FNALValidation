@@ -18,16 +18,16 @@ data_struct = {
 		   'datafiles' : ['Release-2013/CCQEQ2/nu-Hydrocarbon.data'], # FIXME !!
 		   'mcpredictions' : ['MINERvACCQEQ2']                         # Redo later as PAIRS (dict.)
 		 },
-#   'nu-CoherentPi' : { 'projectile' : '14', 'energy' : '1.5,20.',
-#                       'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nu-flux-MINERvA.data',
-#                       'releaselabel' : 'numu_r2014',
-#		       'datafiles' : [ 'Release-2014/CoherentPion/nu-Hydrocarbon-PionEnergy.data', 
-#		                       'Release-2014/CoherentPion/nu-Hydrocarbon-PionPolarAngle.data'
-#				     ],
-#		       'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
-#		                            'MINERvACoherentPionPolarAngle' 
-#					 ]  
-#                     }, 
+   'nu-CoherentPi' : { 'projectile' : '14', 'energy' : '1.5,20.',
+                       'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nu-flux-MINERvA.data',
+                       'releaselabel' : 'numu_r2014',
+		       'datafiles' : [ 'Release-2014/CoherentPion/nu-Hydrocarbon-PionEnergy.data', 
+		                       'Release-2014/CoherentPion/nu-Hydrocarbon-PionPolarAngle.data'
+				     ],
+		       'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
+		                            'MINERvACoherentPionPolarAngle' 
+					 ]  
+                     }, 
    'nu-CCMuProtonFS' : { 'projectile' : '14', 'energy' : '0.,100.',
                          'flux' : 'data/fluxes/minerva/Release-2015/MuProtonFS/nu-flux-MINERvA.data',
 			 'releaselabel' : 'numu_r2015',
@@ -107,8 +107,10 @@ def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, tunes ):
      # same for tunes if specified
      if not ( tunes is None):
         for tn in range(len(tunes)):
-	   optTune = " -t " + target + " --cross-sections input/" + tunes[tn] + "-gxspl-vA-" + tag + ".xml -n " + nevents
-	   # NOTE/FIXME: Also add COH pion when we reinstate it !!!
+	   if key.find("CoherentPi") == -1:
+	      optTune = " -t " + target + " --cross-sections input/" + tunes[tn] + "-gxspl-vA-" + tag + ".xml -n " + nevents
+	   else:
+	      optTune = " -t " + target + " --cross-sections input/" + tunes[tn] + "-gxspl-vA-" + tag + ".xml -n 10000 --event-generator-list COH "
 	   cmdTune = "gevgen " + optTune + " --tune " + tunes[tn] + " -p " + data_struct[key]['projectile'] + " -e " + data_struct[key]['energy'] + \
 	             " -f " + data_struct[key]['flux'] + " -o " + tunes[tn] + "-gntp." + key + "-" + data_struct[key]['releaselabel'] + ".ghep.root"
 	   jobsub.addJob( xsec_a_path+"/"+tunes[tn]+"/"+tunes[tn]+"-"+inputxsec, out+"/"+tunes[tn], tunes[tn]+"-"+logfile, cmdTune, None )
