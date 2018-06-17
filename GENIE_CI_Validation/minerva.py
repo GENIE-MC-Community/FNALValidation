@@ -149,12 +149,13 @@ def createCmpConfigs( tag, date, reportdir, tunes, regretags ):
 	    print >>xml, '\t<model name="GENIE_' + tag + ':' + tunes[tn] + ':' + data_struct[key]['releaselabel'] + '">'
 	    print >>xml, '\t\t<evt_file format="ghep"> input/' + tunes[tn] + '-gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
 	    print >>xml, '\t</model>'
-      # regression if specified
-      if not (regretags is None):
-         for rt in range(len(regretags)):
-	    print >>xml, '\t<model name="GENIE_' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
-	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
-	    print >>xml, '\t</model>'
+      # regression if specified (but not for COH pion since regression files seems corrupted)
+      if key.find("CoherentPi") == -1:
+         if not (regretags is None):
+            for rt in range(len(regretags)):
+	       print >>xml, '\t<model name="GENIE_' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
+	       print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+	       print >>xml, '\t</model>'
       print >>xml, '</genie_simulation_outputs>'
       xml.close()
 
