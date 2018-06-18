@@ -20,6 +20,7 @@ def prepare ( path ):
   paths['hadron']  = path + "/events/hadronization"
   paths['minerva'] = path + "/events/minerva"
   paths['t2k'] = path + "/events/t2k"
+  paths['miniboone'] = path + "/events/miniboone"
 
   # reports
   paths['reports'] = path + "/reports"
@@ -29,6 +30,7 @@ def prepare ( path ):
   paths['hadrep']  = path + "/reports/hadronization_test"
   paths['minervarep'] = path + "/reports/minerva"
   paths['t2krep'] = path + "/reports/t2k"
+  paths['mbrep'] = path + "/reports/miniboone"
 
   # create all directiories
   for p in paths.values():

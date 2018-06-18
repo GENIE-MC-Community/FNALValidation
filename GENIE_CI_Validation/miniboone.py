@@ -1,46 +1,59 @@
-# fill dag with T2K-like test jobs
+# fill dag with MiniBooNE-like test jobs
 
 import msg
 import outputPaths
 import os
 
-# 1st attempt to generate T2K event sample (minimalistic 10K events)
+# 1st attempt to generate MiniBooNE event sample(s) (minimalistic 10K events 
 #
-# This ius based on $GENOR_COMPARISONS/src/scripts/Production/submit_t2k_validation_mc_jobs.pl
-# (case of runnu=110)
+# numu CCQE, Release-2010
 #
-# gevgen -n 10000 -p 14 -t 1000060120 -e 0,20 -r 110 --seed 12345 \
-#        --cross-sections input/gxspl-vA-trunk.xml \
-#        -f data/measurements/vA/t2k/t2k_nd280_numucc_2013/data_release.root,flux_numu
+# gevgen -n 10000 -p 14 -t 1000060120[0.857142],1000010010[0.142857] \
+#        -e 0,10. --cross-sections gxspl-vA-trunk.xml -r 10000 \
+#        -f data/fluxes/miniboone/miniboone_april07_baseline_rgen610.6_flux_pospolarity_fluxes.root,flux_pos_pol_numu 
+#
+# numubar CCQE, Release-2013
+# gevgen -n 10000 -p -14 -t 1000060120[0.857142],1000010010[0.142857] \ 
+# -e 0,10. --cross-sections gxspl-vA-trunk.xml -r 20000 \
+ # -f data/fluxes/miniboone/miniboone_december2007_horn-174ka_rgen610.6_flux_negpolarity_fluxes.root,flux_neg_pol_numu
+#
+# NOTE: one may also want to use --seed <SEED>
 #
 
 nevents="100000"
 
-target="1000060120"
+target="1000060120[0.857142],1000010010[0.142857]"
 
 data_struct = {
-   'numucc0pi' : { 'projectile' : '14', 'energy' : '0,20',
-                   'flux' : 'data/measurements/vA/t2k/t2k_nd280_numucc_2013/data_release.root,flux_numu',
-		   'releaselabel' : 't2k_nd280_numu_2015',
-		   'datafiles' : ['t2k_nd280_numucc0pi_2015.xml'], # no need for leading 'data/measurements/vA/t2k/'
-		   'dataclass' : 'T2KND280NuMuCC0pi2015Data',
-		   'mcpredictions' : ['T2KND280NuMuCC0pi2015Prediction']
-		 }
+   'numuccqe' : { 'projectile' : '14', 'energy' : '0,10.', 
+                  'flux' : 'data/fluxes/miniboone/miniboone_april07_baseline_rgen610.6_flux_pospolarity_fluxes.root,flux_pos_pol_numu',
+		  'releaselabel' : 'numu_ccqe_2010',
+		  'datafiles' : [ 'miniboone_nuccqe_2010.xml' ], # no need for leading 'data/measurements/vA/miniboone/'
+		  'dataclass' : 'MBCCQEData',
+		  'mcpredictions' : [ 'MBCCQEPrediction' ]
+                },
+   'numubarccqe' : { 'projectile' : '-14', 'energy' : '0,10.',
+                     'flux' : 'data/fluxes/miniboone/miniboone_december2007_horn-174ka_rgen610.6_flux_negpolarity_fluxes.root,flux_neg_pol_numu',
+		     'releaselabel' : 'numubar_ccqe_2013',
+		     'datafiles' : [ 'data/fluxes/miniboone/miniboone_december2007_horn-174ka_rgen610.6_flux_negpolarity_fluxes.root,flux_neg_pol_numu' ],
+		     'dataclass': 'MBCCQEData',
+		     'mcpredictions' : ['MBCCQEPrediction']
+                   }
 }
 
 def fillDAG( jobsub, tag, date, paths, tunes, regretags, regredir ):
-   outputPaths.expand( paths['t2k'], tunes )
-   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['t2k'], tunes )
-   createCmpConfigs( tag, date, paths['t2krep'], tunes, regretags )
-   fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['t2k'], paths['t2krep'], tunes, regretags, regredir )
+   outputPaths.expand( paths['miniboone'], tunes )
+   fillDAG_GHEP( jobsub, tag, paths['xsec_A'], paths['miniboone'], tunes )
+   createCmpConfigs( tag, date, paths['mbrep'], tunes, regretags )
+   fillDAG_cmp( jobsub, tag, date, paths['xsec_A'], paths['miniboone'], paths['mbrep'], tunes, regretags, regredir )
 
 def fillDAG_GHEP( jobsub, tag, xsec_a_path, out, tunes ):
 
    if eventFilesExist(out, tunes):
-      msg.warning ("T2K test ghep files found in " + out + " ... " + msg.BOLD + "skipping t2k:fillDAG_GHEP\n", 1)
+      msg.warning ("MiniBooNE test ghep files found in " + out + " ... " + msg.BOLD + "skipping miniboone:fillDAG_GHEP\n", 1)
       return
 
-   msg.info ("\tAdding T2K test (ghep) jobs\n")
+   msg.info ("\tAdding MiniBooNE test (ghep) jobs\n")
 
    # in parallel mode
    jobsub.add ("<parallel>")
@@ -80,14 +93,14 @@ def createCmpConfigs( tag, date, reportdir, tunes, regretags ):
       gxml = open( gcfg, 'w' )
       print >>gxml, '<?xml version="1.0" encoding="ISO-8859-1"?>'
       print >>gxml, '<config>'
-      print >>gxml, '\t<experiment name="T2K">'
+      print >>gxml, '\t<experiment name="MiniBooNE">'
       print >>gxml, '\t\t<paths_relative_to_geniecmp_topdir> false </paths_relative_to_geniecmp_topdir>'
 
       print >>gxml, '\t\t\t<comparison>'
 
       for i in range( len( data_struct[key]['datafiles'] ) ):
          print >>gxml, '\t\t\t\t<spec>'
-         print >>gxml, '\t\t\t\t\t<path2data> data/measurements/vA/t2k/' + data_struct[key]['datafiles'][i] + ' </path2data>'
+         print >>gxml, '\t\t\t\t\t<path2data> data/measurements/vA/miniboone/' + data_struct[key]['datafiles'][i] + ' </path2data>'
          print >>gxml, '\t\t\t\t\t<dataclass> ' + data_struct[key]['dataclass'] + ' </dataclass>'
          print >>gxml, '\t\t\t\t\t<predictionclass> ' + data_struct[key]['mcpredictions'][i] + ' </predictionclass>'
          print >>gxml, '\t\t\t\t</spec>'
@@ -127,11 +140,11 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
 
    # check if job is done already
    if resultsExist ( tag, date, reportdir ):
-      msg.warning ("T2K comparisons plots found in " + reportdir + " ... " + msg.BOLD + "skipping t2k:fillDAG_cmp\n", 1)
+      msg.warning ("MiniBooNE comparisons plots found in " + reportdir + " ... " + msg.BOLD + "skipping miniboone:fillDAG_cmp\n", 1)
       return
 
    # not done, add jobs to dag
-   msg.info ("\tAdding T2K comparisons (plots) jobs\n")  
+   msg.info ("\tAdding MiniBooNE comparisons (plots) jobs\n")  
      
    # in serial mode
    jobsub.add ("<parallel>")
@@ -145,7 +158,7 @@ def fillDAG_cmp( jobsub, tag, date, xsec_a_path, eventdir, reportdir, tunes, reg
    if not (regretags is None):
       regre = ""
       for rt in range(len(regretags)):
-         regre = regre + regredir + "/" + regretags[rt] + "/events/t2k/*.ghep.root "
+         regre = regre + regredir + "/" + regretags[rt] + "/events/miniboone/*.ghep.root "
 
    for key in data_struct.iterkeys():
       inFile = "cmp-" + data_struct[key]['releaselabel'] + "-" + tag + "_" + date + ".xml"
