@@ -50,16 +50,16 @@ data_struct = {
 		      'datafiles' : ['Release-2013/CCQEQ2/nubar-Hydrocarbon.data'],
 		      'mcpredictions' : [ 'MINERvACCQEQ2' ]
                     },
-#   'nubar-CoherentPi' : { 'projectile' : '-14', 'energy' : '1.5,20.',
-#                          'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nubar-flux-MINERvA.data',
-#                          'releaselabel' : 'numubar_r2014',
-#		          'datafiles' : [ 'Release-2014/CoherentPion/nubar-Hydrocarbon-PionEnergy.data', 
-#		                          'Release-2014/CoherentPion/nubar-Hydrocarbon-PionPolarAngle.data'
-#				        ],
-#		          'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
-#		                              'MINERvACoherentPionPolarAngle' 
-#					    ]  
-#                        }, 
+   'nubar-CoherentPi' : { 'projectile' : '-14', 'energy' : '1.5,20.',
+                          'flux' : 'data/fluxes/minerva/Release-2014/CoherentPion/nubar-flux-MINERvA.data',
+                          'releaselabel' : 'numubar_r2014',
+		          'datafiles' : [ 'Release-2014/CoherentPion/nubar-Hydrocarbon-PionEnergy.data', 
+		                          'Release-2014/CoherentPion/nubar-Hydrocarbon-PionPolarAngle.data'
+				        ],
+		          'mcpredictions' : [ 'MINERvACoherentPionEnergy', 
+		                              'MINERvACoherentPionPolarAngle' 
+					    ]  
+                        }, 
    'nubar-CC1Pi0' : { 'projectile' : '-14', 'energy' : '0.1,20.',
                       'flux' : 'data/fluxes/minerva/Release-2015/SinglePi0/nubar-flux-MINERvA.data',
                       'releaselabel' : 'numu_r2015',
@@ -150,12 +150,13 @@ def createCmpConfigs( tag, date, reportdir, tunes, regretags ):
 	    print >>xml, '\t\t<evt_file format="ghep"> input/' + tunes[tn] + '-gntp.' + key + "-" + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
 	    print >>xml, '\t</model>'
       # regression if specified (but not for COH pion since regression files seems corrupted)
-      if key.find("CoherentPi") == -1:
-         if not (regretags is None):
-            for rt in range(len(regretags)):
-	       print >>xml, '\t<model name="GENIE_' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
-	       print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
-	       print >>xml, '\t</model>'
+      # backward compatibility repaired for COH (and perhaps others); so resume "full" regression  
+      # if key.find("CoherentPi") == -1:
+      if not (regretags is None):
+         for rt in range(len(regretags)):
+	    print >>xml, '\t<model name="GENIE_' + regretags[rt] + ":default:" + data_struct[key]['releaselabel'] + '">'
+	    print >>xml, '\t\t<evt_file format="ghep"> input/regre/' + regretags[rt] + '/gntp.' + key + '-' + data_struct[key]['releaselabel'] + '.ghep.root </evt_file>'
+	    print >>xml, '\t</model>'
       print >>xml, '</genie_simulation_outputs>'
       xml.close()
 
