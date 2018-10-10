@@ -239,6 +239,7 @@ mv *.log scratch
 mv *.eps scratch
 mv *.ps scratch
 mv *.pdf scratch
+mv *.txt scratch
 
 if [ "$debug" == "true" ]
 then

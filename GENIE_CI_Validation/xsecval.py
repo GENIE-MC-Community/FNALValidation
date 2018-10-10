@@ -295,11 +295,14 @@ comparisons = {
 			         'mcpredictions' : ['INXSPredExclPion'],
 			         'outprefix' : 'c05d11_'
 			       },
-   'cmp_numuCCnpi+_all' :   { 'datafiles' : ['numuCCnpi+_all.xml'], 
-                              'dataclass' : 'INXSDataSet',
-			      'mcpredictions' : ['INXSPredExclPion'],
-			      'outprefix' : 'c06c01_'
-			    },
+# this one seems to "hang" as of Sept-Oct 2018
+# needs to be investigated
+#
+#   'cmp_numuCCnpi+_all' :   { 'datafiles' : ['numuCCnpi+_all.xml'], 
+#                              'dataclass' : 'INXSDataSet',
+#			      'mcpredictions' : ['INXSPredExclPion'],
+#			      'outprefix' : 'c06c01_'
+#			    },
    'cmp_numuCCnpi+_ANL_12FT,7' :   { 'datafiles' : ['numuCCnpi+_ANL_12FT,7.xml'],
                                      'dataclass' : 'INXSDataSet',
 			             'mcpredictions' : ['INXSPredExclPion'],
@@ -320,11 +323,14 @@ comparisons = {
 			         'mcpredictions' : ['INXSPredExclPion'],
 			         'outprefix' : 'c06d04_'
 			       },
-   'cmp_numuCCppi0_all' :   { 'datafiles' : ['numuCCppi0_all.xml'], 
-                              'dataclass' : 'INXSDataSet',
-			      'mcpredictions' : ['INXSPredExclPion'],
-			      'outprefix' : 'c07c01_'
-			    },
+# this one to "hang" as of Sept-Oct 2018
+# needs to be investigated
+#
+#   'cmp_numuCCppi0_all' :   { 'datafiles' : ['numuCCppi0_all.xml'], 
+#                              'dataclass' : 'INXSDataSet',
+#			      'mcpredictions' : ['INXSPredExclPion'],
+#			      'outprefix' : 'c07c01_'
+#			    },
    'cmp_numuCCppi0_ANL_12FT,6' :   { 'datafiles' : ['numuCCppi0_ANL_12FT,6.xml'],
                                      'dataclass' : 'INXSDataSet',
 			             'mcpredictions' : ['INXSPredExclPion'],
